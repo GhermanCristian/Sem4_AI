@@ -1,4 +1,3 @@
-# import the pygame module, so you can use it
 import pygame
 from pygame.constants import KEYDOWN
 from random import randint
@@ -7,27 +6,24 @@ from environment import Environment
 from board import Board
 from constants import Constants
 
+def initialisePygame():
+    pygame.init()
+    logo = pygame.image.load("logo32x32.png")
+    pygame.display.set_icon(logo)
+    pygame.display.set_caption("Doru Exploratoru")
+
 def main():
-    #we create the environment
-    e = Environment()
+    e = Environment() #we create the environment
     e.loadEnvironment("test2.map")
     #print(str(e))
     
-    # we create the map
-    m = Board() 
-    
-    # initialize the pygame module
-    pygame.init()
-    # load and set the logo
-    logo = pygame.image.load("logo32x32.png")
-    pygame.display.set_icon(logo)
-    pygame.display.set_caption("drone exploration")
+    m = Board() # we create the map
+    initialisePygame()
         
     # we position the drone somewhere in the area
+    # TO-DO: check that the drone is not positioned on an occupied tile
     x = randint(0, 19)
     y = randint(0, 19)
-    
-    #cream drona
     d = Drone(x, y)
     
     # create a surface on screen that has the size of 800 x 480
@@ -35,11 +31,9 @@ def main():
     screen.fill(Constants.WHITE)
     screen.blit(e.image(), (0,0))
     
-    # define a variable to control the main loop
-    running = True
+    running = True # define a variable to control the main loop
      
-    # main loop
-    while running:
+    while running: # main loop
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
@@ -57,9 +51,5 @@ def main():
        
     pygame.quit()
      
-     
-# run the main function only if this module is executed as the main script
-# (if you import this as a module then nothing is executed)
 if __name__=="__main__":
-    # call the main function
     main()

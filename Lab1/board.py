@@ -13,41 +13,39 @@ class Board():
         
     def markDetectedWalls(self, e, x, y):
         #   To DO
-        # mark on this map the wals that you detect
-        wals = e.readUDMSensors(x, y)
+        # mark on this map the walls that you detect
+        walls = e.readUDMSensors(x, y)
         i = x - 1
-        if wals[Constants.UP] > 0:
-            while ((i>=0) and (i >= x - wals[Constants.UP])):
+        if walls[Constants.UP] > 0:
+            while ((i>=0) and (i >= x - walls[Constants.UP])):
                 self.surface[i][y] = 0
                 i = i - 1
         if (i>=0):
             self.surface[i][y] = 1
             
         i = x + 1
-        if wals[Constants.DOWN] > 0:
-            while ((i < self.__n) and (i <= x + wals[Constants.DOWN])):
+        if walls[Constants.DOWN] > 0:
+            while ((i < self.__n) and (i <= x + walls[Constants.DOWN])):
                 self.surface[i][y] = 0
                 i = i + 1
         if (i < self.__n):
             self.surface[i][y] = 1
             
         j = y + 1
-        if wals[Constants.LEFT] > 0:
-            while ((j < self.__m) and (j <= y + wals[Constants.LEFT])):
+        if walls[Constants.LEFT] > 0:
+            while ((j < self.__m) and (j <= y + walls[Constants.LEFT])):
                 self.surface[x][j] = 0
                 j = j + 1
         if (j < self.__m):
             self.surface[x][j] = 1
         
         j = y - 1
-        if wals[Constants.RIGHT] > 0:
-            while ((j >= 0) and (j >= y - wals[Constants.RIGHT])):
+        if walls[Constants.RIGHT] > 0:
+            while ((j >= 0) and (j >= y - walls[Constants.RIGHT])):
                 self.surface[x][j] = 0
                 j = j - 1
         if (j >= 0):
             self.surface[x][j] = 1
-        
-        return None
         
     def image(self, x, y):
         imagine = pygame.Surface((420,420))
@@ -64,6 +62,6 @@ class Board():
                 elif (self.surface[i][j] == 0):
                     imagine.blit(empty, (j * 20, i * 20))
                 
-        drona = pygame.image.load("drona.png")
+        drona = pygame.image.load("minune.jpg")
         imagine.blit(drona, (y *20, x*20))
         return imagine
