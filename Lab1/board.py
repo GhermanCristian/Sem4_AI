@@ -4,15 +4,14 @@ import pygame
 
 class Board():
     def __init__(self):
-        self.__n = 20
-        self.__m = 20
-        self.__surface = np.zeros((self.__n, self.__m))
-        for i in range(self.__n):
-            for j in range(self.__m):
+        self.__height = Constants.BOARD_HEIGHT
+        self.__width = Constants.BOARD_WIDTH
+        self.__surface = np.zeros((self.__height, self.__width))
+        for i in range(self.__height):
+            for j in range(self.__width):
                 self.__surface[i][j] = -1
         
     def markDetectedWalls(self, e, x, y):
-        #   To DO
         # mark on this map the walls that you detect
         walls = e.readUDMSensors(x, y)
         i = x - 1
@@ -25,18 +24,18 @@ class Board():
             
         i = x + 1
         if walls[Constants.DOWN] > 0:
-            while ((i < self.__n) and (i <= x + walls[Constants.DOWN])):
+            while ((i < self.__height) and (i <= x + walls[Constants.DOWN])):
                 self.__surface[i][y] = 0
                 i = i + 1
-        if (i < self.__n):
+        if (i < self.__height):
             self.__surface[i][y] = 1
             
         j = y + 1
         if walls[Constants.LEFT] > 0:
-            while ((j < self.__m) and (j <= y + walls[Constants.LEFT])):
+            while ((j < self.__width) and (j <= y + walls[Constants.LEFT])):
                 self.__surface[x][j] = 0
                 j = j + 1
-        if (j < self.__m):
+        if (j < self.__width):
             self.__surface[x][j] = 1
         
         j = y - 1
@@ -48,7 +47,7 @@ class Board():
             self.__surface[x][j] = 1
         
     def getValueOnPosition(self, xCoord, yCoord):
-        if xCoord < 0 or yCoord < 0 or xCoord >= self.__n or yCoord >= self.__m:
+        if xCoord < 0 or yCoord < 0 or xCoord >= self.__height or yCoord >= self.__width:
             raise IndexError("Coordinates out of bounds")
         return self.__surface[xCoord][yCoord]
         
@@ -60,8 +59,8 @@ class Board():
         brick.fill(Constants.BLACK)
         imagine.fill(Constants.GRAYBLUE)
         
-        for i in range(self.__n):
-            for j in range(self.__m):
+        for i in range(self.__height):
+            for j in range(self.__width):
                 if (self.__surface[i][j] == 1):
                     imagine.blit(brick, (j * 20, i * 20))
                 elif (self.__surface[i][j] == 0):

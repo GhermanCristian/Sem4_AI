@@ -14,8 +14,6 @@ def initialisePygame():
 
 def main():
     e = Environment() #we create the environment
-    e.loadEnvironment("test2.map")
-    #print(str(e))
     
     m = Board() # we create the map
     initialisePygame()
