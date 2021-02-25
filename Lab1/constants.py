@@ -15,3 +15,5 @@ class Constants:
     
     #define indexes variations 
     v = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+    
+    BOARD_FILL_PERCENTAGE = 0.2

@@ -6,10 +6,10 @@ class Board():
     def __init__(self):
         self.__n = 20
         self.__m = 20
-        self.surface = np.zeros((self.__n, self.__m))
+        self.__surface = np.zeros((self.__n, self.__m))
         for i in range(self.__n):
             for j in range(self.__m):
-                self.surface[i][j] = -1
+                self.__surface[i][j] = -1
         
     def markDetectedWalls(self, e, x, y):
         #   To DO
@@ -18,34 +18,39 @@ class Board():
         i = x - 1
         if walls[Constants.UP] > 0:
             while ((i>=0) and (i >= x - walls[Constants.UP])):
-                self.surface[i][y] = 0
+                self.__surface[i][y] = 0
                 i = i - 1
         if (i>=0):
-            self.surface[i][y] = 1
+            self.__surface[i][y] = 1
             
         i = x + 1
         if walls[Constants.DOWN] > 0:
             while ((i < self.__n) and (i <= x + walls[Constants.DOWN])):
-                self.surface[i][y] = 0
+                self.__surface[i][y] = 0
                 i = i + 1
         if (i < self.__n):
-            self.surface[i][y] = 1
+            self.__surface[i][y] = 1
             
         j = y + 1
         if walls[Constants.LEFT] > 0:
             while ((j < self.__m) and (j <= y + walls[Constants.LEFT])):
-                self.surface[x][j] = 0
+                self.__surface[x][j] = 0
                 j = j + 1
         if (j < self.__m):
-            self.surface[x][j] = 1
+            self.__surface[x][j] = 1
         
         j = y - 1
         if walls[Constants.RIGHT] > 0:
             while ((j >= 0) and (j >= y - walls[Constants.RIGHT])):
-                self.surface[x][j] = 0
+                self.__surface[x][j] = 0
                 j = j - 1
         if (j >= 0):
-            self.surface[x][j] = 1
+            self.__surface[x][j] = 1
+        
+    def getValueOnPosition(self, xCoord, yCoord):
+        if xCoord < 0 or yCoord < 0 or xCoord >= self.__n or yCoord >= self.__m:
+            raise IndexError("Coordinates out of bounds")
+        return self.__surface[xCoord][yCoord]
         
     def image(self, x, y):
         imagine = pygame.Surface((420,420))
@@ -57,9 +62,9 @@ class Board():
         
         for i in range(self.__n):
             for j in range(self.__m):
-                if (self.surface[i][j] == 1):
+                if (self.__surface[i][j] == 1):
                     imagine.blit(brick, (j * 20, i * 20))
-                elif (self.surface[i][j] == 0):
+                elif (self.__surface[i][j] == 0):
                     imagine.blit(empty, (j * 20, i * 20))
                 
         drona = pygame.image.load("minune.jpg")
