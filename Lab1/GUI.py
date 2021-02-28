@@ -63,6 +63,7 @@ class GUI:
     def start(self):
         self.__initialisePygame()
         screen = self.__createScreen()
+        self.__service.markBoardDetectedWalls()
         
         running = True # define a variable to control the main loop
         while running: # main loop

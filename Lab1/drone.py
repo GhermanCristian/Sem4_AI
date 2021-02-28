@@ -24,7 +24,6 @@ class Drone():
         return self.__y  
                   
     def moveDFS(self, detectedMap): # detectedMap = board
-        foundValidSuccessor = False
         newX = self.__x
         newY = self.__y
         
@@ -33,19 +32,17 @@ class Drone():
             newX = self.__x + crtDirection[0]
             newY = self.__y + crtDirection[1] 
             if detectedMap.validCoordinates(newX, newY) and detectedMap.getValueOnPosition(newX, newY) == Constants.EMPTY_POSITION and (newX, newY) not in self.__visitedPositions:
-                self.__positionStack.insert(0, (newX, newY))
+                self.__positionStack.insert(0, (self.__x, self.__y))
+                self.__x = newX # we can advance, move to the position determined above
+                self.__y = newY
                 self.__visitedPositions.append((newX, newY))
-                foundValidSuccessor = True
-                break # only insert the first available one, if any
+                return True # only insert the first available one, if any
         
-        if foundValidSuccessor == False: # we found a "dead end", we need to go back one position or to end the program
-            if len(self.__positionStack) == 0: # end the program, there's nowhere to go back
-                return False
-            self.__x, self.__y = self.__positionStack.pop(0) # go back one positiion
-        else: # we can advance, move to the position determined above
-            self.__x = newX
-            self.__y = newY
-            
+        # we found a "dead end", we need to go back one position or to end the program
+        if len(self.__positionStack) == 0: # end the program, there's nowhere to go back
+            return False
+
+        self.__x, self.__y = self.__positionStack.pop(0) # go back one positiion
         return True # True = continue (false would've meant stopping the program)
 
 
