@@ -20,14 +20,17 @@ class Service:
     def getVisitedPositions(self):
         return self.__drone.getVisitedPositions()
     
-    def getDronePosition(self):
-        return (self.__drone.x, self.__drone.y)
+    def getDroneXCoord(self):
+        return self.__drone.getXCoord()
+    
+    def getDroneYCoord(self):
+        return self.__drone.getYCoord()
     
     def droneOneStepDFS(self):
         return self.__drone.moveDFS(self.__board)
     
     def markBoardDetectedWalls(self):
-        self.__board.markDetectedWalls(self.__environment, self.__drone.x, self.__drone.y)
+        self.__board.markDetectedWalls(self.__environment, self.__drone.getXCoord(), self.__drone.getYCoord())
         
         
         

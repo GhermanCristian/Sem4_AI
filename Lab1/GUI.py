@@ -53,7 +53,7 @@ class GUI:
                     imagine.blit(empty, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 
         drona = pygame.image.load("minune.jpg")
-        imagine.blit(drona, (self.__service.getDronePosition()[1] * Constants.TILE_SIZE, self.__service.getDronePosition()[0] * Constants.TILE_SIZE))
+        imagine.blit(drona, (self.__service.getDroneYCoord() * Constants.TILE_SIZE, self.__service.getDroneXCoord() * Constants.TILE_SIZE))
         return imagine
     
     def start(self):
