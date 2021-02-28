@@ -46,23 +46,30 @@ class Board():
         if (j >= 0):
             self.__surface[x][j] = 1
         
+    def validCoordinates(self, xCoord, yCoord):
+        return xCoord >= 0 and yCoord >= 0 and xCoord < self.__height and yCoord < self.__width 
+        
     def getValueOnPosition(self, xCoord, yCoord):
-        if xCoord < 0 or yCoord < 0 or xCoord >= self.__height or yCoord >= self.__width:
+        if self.validCoordinates(xCoord, yCoord) == False:
             raise IndexError("Coordinates out of bounds")
         return self.__surface[xCoord][yCoord]
         
-    def image(self, x, y):
+    def image(self, x, y, visitedPositions):
         imagine = pygame.Surface((420,420))
         brick = pygame.Surface((20,20))
         empty = pygame.Surface((20,20))
+        visited = pygame.Surface((20, 20))
         empty.fill(Constants.WHITE)
         brick.fill(Constants.BLACK)
+        visited.fill(Constants.GREEN)
         imagine.fill(Constants.GRAYBLUE)
         
         for i in range(self.__height):
             for j in range(self.__width):
                 if (self.__surface[i][j] == 1):
                     imagine.blit(brick, (j * 20, i * 20))
+                elif (i, j) in visitedPositions:
+                    imagine.blit(visited, (j * 20, i * 20))
                 elif (self.__surface[i][j] == 0):
                     imagine.blit(empty, (j * 20, i * 20))
                 

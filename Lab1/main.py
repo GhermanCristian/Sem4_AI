@@ -1,5 +1,4 @@
 import pygame
-from pygame.constants import KEYDOWN
 from random import randint
 from drone import Drone
 from environment import Environment
@@ -19,7 +18,7 @@ def main():
     initialisePygame()
         
     # we position the drone somewhere in the area
-    # TO-DO: check that the drone is not positioned on an occupied tile
+    # TO-DO: check that the drone is not positioned on an occupied tile (if read sensors returns a list of 0 0 0 0)
     x = randint(0, 19)
     y = randint(0, 19)
     d = Drone(x, y)
@@ -32,21 +31,18 @@ def main():
     running = True # define a variable to control the main loop
      
     while running: # main loop
-        # event handling, gets all event from the event queue
-        for event in pygame.event.get():
-            # only do something if the event is of type QUIT
-            if event.type == pygame.QUIT:
-                # change the value to False, to exit the main loop
-                running = False
-            if event.type == KEYDOWN:
-                # use this function instead of move
-                #d.moveDSF(m)
-                d.move(m)
-        pygame.time.wait(1) # lowers the burden on the CPU
+        for event in pygame.event.get(): # event handling, gets all event from the event queue
+            if event.type == pygame.QUIT: # only do something if the event is of type QUIT
+                running = False # change the value to False, to exit the main loop
+ 
+        running = d.moveDFS(m)
+        pygame.time.wait(Constants.TIME_INTERVAL_BETWEEN_MOVES)
+        pygame.time.wait(1) # lowers the burden on the CPU, not sure if needed now that we have the wait between moves
         m.markDetectedWalls(e, d.x, d.y)
-        screen.blit(m.image(d.x,d.y),(400,0))
+        screen.blit(m.image(d.x, d.y, d.getVisitedPositions()), (400,0))
         pygame.display.update()
        
+    pygame.time.wait(Constants.TIME_INTERVAL_FINAL_WAIT) # show the final table at the end
     pygame.quit()
      
 if __name__=="__main__":

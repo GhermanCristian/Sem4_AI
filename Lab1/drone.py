@@ -1,29 +1,45 @@
-import pygame
-from pygame.constants import K_UP, K_DOWN, K_LEFT, K_RIGHT
+from constants import Constants
 
 class Drone():
     def __init__(self, x, y):
         self.x = x
         self.y = y
-    
-    def move(self, detectedMap):
-        pressed_keys = pygame.key.get_pressed()
-        if self.x > 0:
-            if pressed_keys[K_UP] and detectedMap.getValueOnPosition(self.x - 1, self.y) == 0:
-                self.x = self.x - 1
-        if self.x < 19:
-            if pressed_keys[K_DOWN] and detectedMap.getValueOnPosition(self.x + 1, self.y)==0:
-                self.x = self.x + 1
+        self.__positionStack = [] # holds pairs of the form (x, y)
+        self.__positionStack.append((x, y))
         
-        if self.y > 0:
-            if pressed_keys[K_LEFT]and detectedMap.getValueOnPosition(self.x, self.y - 1)==0:
-                self.y = self.y - 1
-        if self.y < 19:        
-            if pressed_keys[K_RIGHT] and detectedMap.getValueOnPosition(self.x, self.y + 1)==0:
-                self.y = self.y + 1
+        # holds all positions that are / have been at some point in the stack; also holds pairs of the form (x, y)
+        self.__visitedPositions = [] 
+        self.__visitedPositions.append((x, y))
                   
-    def moveDSF(self, detectedMap):
-        pass
-        # TO DO!
-        # rewrite this function in such a way that you perform an automatic 
-        # mapping with DFS
+    def getVisitedPositions(self):
+        return self.__visitedPositions # used to display the current path on the board             
+                  
+    def moveDFS(self, detectedMap): # detectedMap = board
+        foundValidSuccessor = False
+        newX = self.x
+        newY = self.y
+        
+        print (len(self.__positionStack), len(self.__visitedPositions))
+        
+        # find the next possible move (empty position that hasn't been visited before)
+        for crtDirection in Constants.DIRECTIONS:
+            newX = self.x + crtDirection[0]
+            newY = self.y + crtDirection[1] 
+            if detectedMap.validCoordinates(newX, newY) and detectedMap.getValueOnPosition(newX, newY) == Constants.EMPTY_POSITION and (newX, newY) not in self.__visitedPositions:
+                self.__positionStack.insert(0, (newX, newY))
+                self.__visitedPositions.append((newX, newY))
+                foundValidSuccessor = True
+                break # only insert the first available one, if any
+        
+        if foundValidSuccessor == False: # we found a "dead end", we need to go back one position or to end the program
+            if len(self.__positionStack) == 0: # end the program, there's nowhere to go back
+                return False
+            self.x, self.y = self.__positionStack.pop(0) # go back one positiion
+        else: # we can advance, move to the position determined above
+            self.x = newX
+            self.y = newY
+            
+        return True # True = continue (false would've meant stopping the program)
+
+
+        

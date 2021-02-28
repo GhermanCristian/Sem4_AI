@@ -14,8 +14,15 @@ class Constants:
     RIGHT = 3
     
     #define indexes variations 
-    v = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+    DIRECTIONS = [[-1, 0], [1, 0], [0, 1], [0, -1]]
     
     BOARD_FILL_PERCENTAGE = 0.2
     BOARD_WIDTH = 20
     BOARD_HEIGHT = 20
+    
+    EMPTY_POSITION = 0
+    WALL = 1
+    UNKNOWN_POSITION = -1
+    
+    TIME_INTERVAL_BETWEEN_MOVES = 50 # in miliseconds
+    TIME_INTERVAL_FINAL_WAIT = 2000 # in miliseconds
