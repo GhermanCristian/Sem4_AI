@@ -14,7 +14,7 @@ class Environment():
         for i in range(self.__height):
             for j in range(self.__width):
                 if random.random() <= fill :
-                    self.__surface[i][j] = 1
+                    self.__surface[i][j] = Constants.WALL
                 
     def __str__(self):
         string=""
@@ -28,25 +28,25 @@ class Environment():
         readings = [0, 0, 0, 0] # how many tiles until the first wall in each direction
         # UP 
         xf = x - 1
-        while (xf >= 0) and (self.__surface[xf][y] == 0):
+        while xf >= 0 and self.__surface[xf][y] == Constants.EMPTY_POSITION:
             xf = xf - 1
             readings[Constants.UP] += 1
         
         # DOWN
         xf = x + 1
-        while (xf < self.__height) and (self.__surface[xf][y] == 0):
+        while xf < self.__height and self.__surface[xf][y] == Constants.EMPTY_POSITION:
             xf = xf + 1
             readings[Constants.DOWN] += 1
         
         # RIGHT
         yf = y + 1
-        while (yf < self.__width) and (self.__surface[x][yf] == 0):
+        while yf < self.__width and self.__surface[x][yf] == Constants.EMPTY_POSITION:
             yf = yf + 1
             readings[Constants.RIGHT] += 1
         
         # LEFT
         yf = y - 1
-        while (yf >= 0) and (self.__surface[x][yf] == 0):
+        while yf >= 0 and self.__surface[x][yf] == Constants.EMPTY_POSITION:
             yf = yf - 1
             readings[Constants.LEFT] += 1
      
