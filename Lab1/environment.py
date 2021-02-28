@@ -1,8 +1,8 @@
-import numpy as np, random, pickle, pygame
+import numpy as np, random, pickle
 from constants import Constants
 
 class Environment():
-    # no getters and setters on the env / board
+    # no getters and setters on the env
     def __init__(self):
         self.__height = Constants.BOARD_HEIGHT
         self.__width = Constants.BOARD_WIDTH
@@ -64,16 +64,3 @@ class Environment():
             self.__width = dummy.__m
             self.__surface = dummy.__surface
             f.close()
-        
-    def image(self, colour = Constants.BLUE, background = Constants.WHITE):
-        imagine = pygame.Surface((420,420))
-        brick = pygame.Surface((20,20))
-        brick.fill(colour)
-        imagine.fill(background)
-        for i in range(self.__height):
-            for j in range(self.__width):
-                if (self.__surface[i][j] == 1):
-                    imagine.blit(brick, (j * 20, i * 20))
-                
-        return imagine
- 
