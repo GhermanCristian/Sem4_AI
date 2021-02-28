@@ -13,8 +13,8 @@ class GUI:
         pygame.display.set_caption("Doru Exploratoru")
     
     def __getEnvironmentImage(self):
-        imagine = pygame.Surface((420,420))
-        brick = pygame.Surface((20,20))
+        imagine = pygame.Surface((400, 400))
+        brick = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
         brick.fill(Constants.BLUE)
         imagine.fill(Constants.WHITE)
         environmentString = str(self.__service.getEnvironment())
@@ -22,22 +22,21 @@ class GUI:
         for i in range(Constants.BOARD_HEIGHT):
             for j in range(Constants.BOARD_WIDTH + 1):
                 if environmentString[i * (Constants.BOARD_WIDTH + 1) + j] == '1':
-                    imagine.blit(brick, (j * 20, i * 20))
+                    imagine.blit(brick, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 
         return imagine
     
     def __createScreen(self):
-        # create a surface on screen that has the size of 800 x 480
-        screen = pygame.display.set_mode((800, 400))
+        screen = pygame.display.set_mode((Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT))
         screen.fill(Constants.WHITE)
         screen.blit(self.__getEnvironmentImage(), (0, 0))
         return screen
     
     def __getBoardImage(self):
-        imagine = pygame.Surface((420,420))
-        brick = pygame.Surface((20,20))
-        empty = pygame.Surface((20,20))
-        visited = pygame.Surface((20, 20))
+        imagine = pygame.Surface((400, 400))
+        brick = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
+        empty = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
+        visited = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
         empty.fill(Constants.WHITE)
         brick.fill(Constants.BLACK)
         visited.fill(Constants.GREEN)
@@ -47,14 +46,14 @@ class GUI:
             for j in range(Constants.BOARD_WIDTH):
                 positionValue = self.__service.getBoard().getValueOnPosition(i, j)
                 if positionValue == Constants.WALL:
-                    imagine.blit(brick, (j * 20, i * 20))
+                    imagine.blit(brick, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 elif (i, j) in self.__service.getVisitedPositions():
-                    imagine.blit(visited, (j * 20, i * 20))
+                    imagine.blit(visited, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 elif positionValue == Constants.EMPTY_POSITION:
-                    imagine.blit(empty, (j * 20, i * 20))
+                    imagine.blit(empty, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 
         drona = pygame.image.load("minune.jpg")
-        imagine.blit(drona, (self.__service.getDronePosition()[1] * 20, self.__service.getDronePosition()[0] * 20))
+        imagine.blit(drona, (self.__service.getDronePosition()[1] * Constants.TILE_SIZE, self.__service.getDronePosition()[0] * Constants.TILE_SIZE))
         return imagine
     
     def start(self):
@@ -71,7 +70,7 @@ class GUI:
             
             pygame.time.wait(Constants.TIME_INTERVAL_BETWEEN_MOVES)
             self.__service.markBoardDetectedWalls()
-            screen.blit(self.__getBoardImage(), (400,0))
+            screen.blit(self.__getBoardImage(), (Constants.BOARD_WIDTH * Constants.BOARD_HEIGHT + Constants.SEPARATOR_SIZE,0))
             pygame.display.update()
            
         pygame.time.wait(Constants.TIME_INTERVAL_FINAL_WAIT) # show the final table at the end

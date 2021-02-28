@@ -19,10 +19,15 @@ class Constants:
     BOARD_FILL_PERCENTAGE = 0.2
     BOARD_WIDTH = 20
     BOARD_HEIGHT = 20
+    TILE_SIZE = 20 # square tile
+    
+    SEPARATOR_SIZE = 10
+    SCREEN_WIDTH = 2 * BOARD_WIDTH * TILE_SIZE + SEPARATOR_SIZE
+    SCREEN_HEIGHT = BOARD_HEIGHT * TILE_SIZE
     
     EMPTY_POSITION = 0
     WALL = 1
     UNKNOWN_POSITION = -1
     
-    TIME_INTERVAL_BETWEEN_MOVES = 50 # in miliseconds
+    TIME_INTERVAL_BETWEEN_MOVES = 25 # in miliseconds
     TIME_INTERVAL_FINAL_WAIT = 2000 # in miliseconds
