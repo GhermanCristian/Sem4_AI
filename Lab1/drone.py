@@ -1,15 +1,36 @@
 from constants import Constants
+from random import randint
 
 class Drone():
-    def __init__(self, x, y):
-        self.__x = x
-        self.__y = y
+    def __init__(self, environment):
+        self.__x = 0
+        self.__y = 0
+        self.__findEmptyInitialPosition(environment)
         self.__positionStack = [] # holds pairs of the form (x, y)
-        self.__positionStack.append((x, y))
+        self.__positionStack.append((self.__x, self.__y))
         
         # holds all positions that are / have been at some point in the stack; also holds pairs of the form (x, y)
         self.__visitedPositions = [] 
-        self.__visitedPositions.append((x, y))
+        self.__visitedPositions.append((self.__x, self.__y))
+                  
+    def __validPosition(self, xCoord, yCoord):
+        return xCoord >= 0 and yCoord >= 0 and xCoord < Constants.BOARD_HEIGHT and yCoord < Constants.BOARD_WIDTH 
+    
+    def __findEmptyInitialPosition(self, environment):
+        while True:
+            self.__x = randint(0, Constants.BOARD_HEIGHT - 1)
+            self.__y = randint(0, Constants.BOARD_WIDTH - 1)
+            print (self.__x, self.__y)
+            
+            # we read the sensors for the first tile in each direction, then we check if there's a wall on the tile in its opposite
+            # direction (so our tile); we have the relation that UP + DOWN = LEFT + RIGHT = 3
+            # we need to check all 4 to ensure that we have one that's 'inside'
+            for directionIndex in range(4):
+                direction = Constants.DIRECTIONS[directionIndex]
+                if self.__validPosition(self.__x + direction[0], self.__y + direction[1]):
+                    resultArray = environment.readUDMSensors(self.__x + direction[0], self.__y + direction[1])
+                    if resultArray[3 - directionIndex] != 0: # there's no wall on the current position
+                        return         
                   
     def getPositionStack(self):
         return self.__positionStack              

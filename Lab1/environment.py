@@ -24,31 +24,31 @@ class Environment():
             string = string + "\n"
         return string
                 
-    def readUDMSensors(self, x,y):
+    def readUDMSensors(self, x, y):
         readings = [0, 0, 0, 0] # how many tiles until the first wall in each direction
         # UP 
         xf = x - 1
-        while ((xf >= 0) and (self.__surface[xf][y] == 0)):
+        while (xf >= 0) and (self.__surface[xf][y] == 0):
             xf = xf - 1
             readings[Constants.UP] += 1
         
         # DOWN
         xf = x + 1
-        while ((xf < self.__height) and (self.__surface[xf][y] == 0)):
+        while (xf < self.__height) and (self.__surface[xf][y] == 0):
             xf = xf + 1
             readings[Constants.DOWN] += 1
         
-        # LEFT
-        yf = y + 1
-        while ((yf < self.__width) and (self.__surface[x][yf] == 0)):
-            yf = yf + 1
-            readings[Constants.LEFT] += 1
-        
         # RIGHT
-        yf = y - 1
-        while ((yf >= 0) and (self.__surface[x][yf] == 0)):
-            yf = yf - 1
+        yf = y + 1
+        while (yf < self.__width) and (self.__surface[x][yf] == 0):
+            yf = yf + 1
             readings[Constants.RIGHT] += 1
+        
+        # LEFT
+        yf = y - 1
+        while (yf >= 0) and (self.__surface[x][yf] == 0):
+            yf = yf - 1
+            readings[Constants.LEFT] += 1
      
         return readings
     

@@ -30,16 +30,16 @@ class Board():
             self.__surface[i][y] = 1
             
         j = y + 1
-        if walls[Constants.LEFT] > 0:
-            while ((j < self.__width) and (j <= y + walls[Constants.LEFT])):
+        if walls[Constants.RIGHT] > 0:
+            while ((j < self.__width) and (j <= y + walls[Constants.RIGHT])):
                 self.__surface[x][j] = 0
                 j = j + 1
         if (j < self.__width):
             self.__surface[x][j] = 1
         
         j = y - 1
-        if walls[Constants.RIGHT] > 0:
-            while ((j >= 0) and (j >= y - walls[Constants.RIGHT])):
+        if walls[Constants.LEFT] > 0:
+            while ((j >= 0) and (j >= y - walls[Constants.LEFT])):
                 self.__surface[x][j] = 0
                 j = j - 1
         if (j >= 0):
