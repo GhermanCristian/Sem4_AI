@@ -37,9 +37,11 @@ class GUI:
         brick = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
         empty = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
         visited = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
+        inStack = pygame.Surface((Constants.TILE_SIZE, Constants.TILE_SIZE))
         empty.fill(Constants.WHITE)
         brick.fill(Constants.BLACK)
         visited.fill(Constants.GREEN)
+        inStack.fill(Constants.RED)
         imagine.fill(Constants.GRAYBLUE)
         
         for i in range(Constants.BOARD_HEIGHT):
@@ -47,6 +49,8 @@ class GUI:
                 positionValue = self.__service.getBoard().getValueOnPosition(i, j)
                 if positionValue == Constants.WALL:
                     imagine.blit(brick, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
+                elif (i, j) in self.__service.getPositionStack():
+                    imagine.blit(inStack, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 elif (i, j) in self.__service.getVisitedPositions():
                     imagine.blit(visited, (j * Constants.TILE_SIZE, i * Constants.TILE_SIZE))
                 elif positionValue == Constants.EMPTY_POSITION:

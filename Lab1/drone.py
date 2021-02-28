@@ -11,6 +11,9 @@ class Drone():
         self.__visitedPositions = [] 
         self.__visitedPositions.append((x, y))
                   
+    def getPositionStack(self):
+        return self.__positionStack              
+                  
     def getVisitedPositions(self):
         return self.__visitedPositions # used to display the current path on the board
     

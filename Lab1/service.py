@@ -17,6 +17,9 @@ class Service:
     def getBoard(self):
         return self.__board
     
+    def getPositionStack(self):
+        return self.__drone.getPositionStack()
+    
     def getVisitedPositions(self):
         return self.__drone.getVisitedPositions()
     
