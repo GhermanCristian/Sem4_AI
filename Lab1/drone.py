@@ -19,8 +19,6 @@ class Drone():
         newX = self.x
         newY = self.y
         
-        print (len(self.__positionStack), len(self.__visitedPositions))
-        
         # find the next possible move (empty position that hasn't been visited before)
         for crtDirection in Constants.DIRECTIONS:
             newX = self.x + crtDirection[0]

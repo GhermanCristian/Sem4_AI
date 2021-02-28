@@ -12,11 +12,25 @@ class GUI:
         pygame.display.set_icon(logo)
         pygame.display.set_caption("Doru Exploratoru")
     
-    def __createScreen(self, environment):
+    def __getEnvironmentImage(self):
+        imagine = pygame.Surface((420,420))
+        brick = pygame.Surface((20,20))
+        brick.fill(Constants.BLUE)
+        imagine.fill(Constants.WHITE)
+        environmentString = str(self.__service.getEnvironment())
+
+        for i in range(Constants.BOARD_HEIGHT):
+            for j in range(Constants.BOARD_WIDTH + 1):
+                if environmentString[i * (Constants.BOARD_WIDTH + 1) + j] == '1':
+                    imagine.blit(brick, (j * 20, i * 20))
+                
+        return imagine
+    
+    def __createScreen(self):
         # create a surface on screen that has the size of 800 x 480
-        screen = pygame.display.set_mode((800,400))
+        screen = pygame.display.set_mode((800, 400))
         screen.fill(Constants.WHITE)
-        #screen.blit(environment.image(), (0,0))
+        screen.blit(self.__getEnvironmentImage(), (0, 0))
         return screen
     
     def __getBoardImage(self):
@@ -43,21 +57,9 @@ class GUI:
         imagine.blit(drona, (self.__service.getDronePosition()[1] * 20, self.__service.getDronePosition()[0] * 20))
         return imagine
     
-    """def __getEnvironmentImage(self):
-        imagine = pygame.Surface((420,420))
-        brick = pygame.Surface((20,20))
-        brick.fill(Constants.BLACK)
-        imagine.fill(Constants.WHITE)
-        for i in range(self.__height):
-            for j in range(self.__width):
-                if (self.__surface[i][j] == 1):
-                    imagine.blit(brick, (j * 20, i * 20))
-                
-        return imagine"""
-    
     def start(self):
         self.__initialisePygame()
-        screen = self.__createScreen(self.__service.getEnvironment())
+        screen = self.__createScreen()
         
         running = True # define a variable to control the main loop
         while running: # main loop
