@@ -14,7 +14,7 @@ class Constants:
     RIGHT = 3
     
     #define indexes variations 
-    v = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+    DIRECTIONS = [[-1, 0], [1, 0], [0, 1], [0, -1]]
     
     MAP_HEIGHT = 20 # in no. of tiles
     MAP_WIDTH = 20

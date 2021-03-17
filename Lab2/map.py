@@ -1,11 +1,12 @@
 import numpy as np
 from random import random
 import pickle
+from constants import Constants
 
 class Map():
-    def __init__(self, n = 20, m = 20):
-        self.n = n
-        self.m = m
+    def __init__(self):
+        self.n = Constants.MAP_HEIGHT
+        self.m = Constants.MAP_WIDTH
         self.__surface = np.zeros((self.n, self.m))
     
     def randomMap(self, fill = 0.2):
