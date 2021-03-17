@@ -1,6 +1,7 @@
 from map import Map
 from drone import Drone
 from constants import Constants
+from datetime import datetime
 
 class Service:
     def __init__(self):
@@ -20,23 +21,35 @@ class Service:
         # currentX, currentY are passed as arguments because they are needed for the arg list of roleFunction (that coord is required for A*)
         manhattanDistanceNewPoint = self.__computeManhattanDistance(newX, newY, finalX, finalY)
         manhattanDistanceExistingPoint = self.__computeManhattanDistance(existingX, existingY, finalX, finalY)
-        return manhattanDistanceNewPoint > manhattanDistanceExistingPoint
+        return manhattanDistanceNewPoint * (1 + 0) <= manhattanDistanceExistingPoint
     
     def __addToQueueAccordingToRule(self, toVisitList, newX, newY, currentX, currentY, finalX, finalY, ruleFunction):
         pos = 0
         while pos < len(toVisitList):
-            if ruleFunction(newX, newY, currentX, currentY, toVisitList[pos][0], toVisitList[pos][1], finalX, finalY) == False:
+            if ruleFunction(newX, newY, currentX, currentY, toVisitList[pos][0], toVisitList[pos][1], finalX, finalY) == True:
                 # the distance of the new point is smaller than some point in the queue => we add it here
                 toVisitList.insert(pos, (newX, newY))
                 return
             pos += 1
         toVisitList.append((newX, newY)) # the new point has the largest distance => it's the last one => add it to the end
     
+    def __determineActualPath(self, predecessorDictionary, finalX, finalY):
+        actualPath = []
+        newX, newY = finalX, finalY
+        while predecessorDictionary[(newX, newY)] is not None:
+            actualPath.append((newX, newY))
+            newX, newY = predecessorDictionary[(newX, newY)]
+        actualPath.append((newX, newY))
+        return reversed(actualPath)
+    
     def searchGreedy(self, initialX, initialY, finalX, finalY):
+        initialTime = datetime.now()
         found = False
         visitedPositions = [] # holds pairs (x, y)
         leftToVisit = [] # holds pairs (x, y)
         leftToVisit.append((initialX, initialY))
+        predecessorDictionary = {} # key = pair (x, y); value = pair (x, y); value = predecessor of key
+        predecessorDictionary[(initialX, initialY)] = None
         
         while not found and leftToVisit:
             crtX, crtY = leftToVisit.pop(0)
@@ -50,11 +63,14 @@ class Service:
                 newX = crtX + direction[0]
                 newY = crtY + direction[1]
                 if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
+                    predecessorDictionary[(newX, newY)] = (crtX, crtY)
                     self.__addToQueueAccordingToRule(leftToVisit, newX, newY, crtX, crtY, finalX, finalY, self.__compareGreedy)
         
-        # retrace path
-                    
-        return visitedPositions
+        actualPath = self.__determineActualPath(predecessorDictionary, finalX, finalY)
+        
+        finalTime = datetime.now()
+        print ("Greedy -> ", finalTime - initialTime)
+        return actualPath
     
     def searchAStar(self, initialX, initialY, finalX, finalY):
         pass

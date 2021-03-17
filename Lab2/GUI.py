@@ -39,12 +39,12 @@ class GUI:
         pathImage = self.__getMapImage()
         
         for move in path:
-            pathImage.blit(visitedTile, (move[1] *20, move[0] * 20))
+            pathImage.blit(visitedTile, (move[1] * 20, move[0] * 20))
             pathImageCopy = pathImage.copy()
-            pathImageCopy.blit(droneImage, (move[1] *20, move[0] * 20))
+            pathImageCopy.blit(droneImage, (move[1] * 20, move[0] * 20))
             self.__screen.blit(pathImageCopy, (0, 0))
             pygame.display.update()
-            pygame.time.wait(400)
+            pygame.time.wait(Constants.TIME_BETWEEN_MOVES)
             
         return image
     
@@ -58,6 +58,11 @@ class GUI:
         pygame.display.update()
         
         self.__displayWithPath(self.__service.searchGreedy(2, 3, 19, 3))
-        pygame.display.update()
-        pygame.time.wait(5000)
+        
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    break
+            pygame.time.wait(1)
+
         pygame.quit()

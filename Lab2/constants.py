@@ -18,3 +18,5 @@ class Constants:
     
     MAP_HEIGHT = 20 # in no. of tiles
     MAP_WIDTH = 20
+    
+    TIME_BETWEEN_MOVES = 250 # in miliseconds
