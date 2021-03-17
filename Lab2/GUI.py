@@ -29,24 +29,28 @@ class GUI:
                 
         return image
     
-    def __displayWithPath(self, path):
+    def __displayWithPath(self, visitedPositions, actualPath):
         droneImage = pygame.image.load("minune.jpg")
         
         visitedTile = pygame.Surface((20,20))
-        visitedTile.fill(Constants.GREEN)
+        visitedTile.fill(Constants.RED)
+        pathTile = pygame.Surface((20,20))
+        pathTile.fill(Constants.GREEN)
         
-        image = self.__getMapImage()
         pathImage = self.__getMapImage()
         
-        for move in path:
-            pathImage.blit(visitedTile, (move[1] * 20, move[0] * 20))
+        # show all the visited positions
+        for position in visitedPositions:
+            pathImage.blit(visitedTile, (position[1] * 20, position[0] * 20))
+        
+        # then progressively show the actual path of the drone
+        for position in actualPath:
+            pathImage.blit(pathTile, (position[1] * 20, position[0] * 20))
             pathImageCopy = pathImage.copy()
-            pathImageCopy.blit(droneImage, (move[1] * 20, move[0] * 20))
+            pathImageCopy.blit(droneImage, (position[1] * 20, position[0] * 20))
             self.__screen.blit(pathImageCopy, (0, 0))
             pygame.display.update()
             pygame.time.wait(Constants.TIME_BETWEEN_MOVES)
-            
-        return image
     
     def __drawDrone(self, mapImage):
         droneImage = pygame.image.load("minune.jpg")
@@ -57,7 +61,8 @@ class GUI:
         self.__screen.blit(self.__drawDrone(self.__getMapImage()), (0, 0))
         pygame.display.update()
         
-        self.__displayWithPath(self.__service.searchGreedy(2, 3, 19, 3))
+        visitedPositions, actualPath = self.__service.searchGreedy(2, 3, 13, 19)
+        self.__displayWithPath(visitedPositions, actualPath)
         
         while True:
             for event in pygame.event.get():

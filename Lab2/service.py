@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Service:
     def __init__(self):
-        self.__map = Map();
+        self.__map = Map()
         self.__map.loadMap("test1.map")
         self.__drone = Drone(2, 3) #I'll place it by default on an empty position
     
@@ -16,17 +16,10 @@ class Service:
     def __computeManhattanDistance(self, x1, y1, x2, y2):
         return abs(x1 - x2) + abs(y1 - y2)
     
-    def __compareGreedy(self, newX, newY, currentX, currentY, existingX, existingY, finalX, finalY):
-        # h(n) = manhattan distance (n, finalPoint)
-        # currentX, currentY are passed as arguments because they are needed for the arg list of roleFunction (that coord is required for A*)
-        manhattanDistanceNewPoint = self.__computeManhattanDistance(newX, newY, finalX, finalY)
-        manhattanDistanceExistingPoint = self.__computeManhattanDistance(existingX, existingY, finalX, finalY)
-        return manhattanDistanceNewPoint * (1 + 0) <= manhattanDistanceExistingPoint
-    
-    def __addToQueueAccordingToRule(self, toVisitList, newX, newY, currentX, currentY, finalX, finalY, ruleFunction):
+    def __addToQueueAccordingToEvaluation(self, toVisitList, positionEvaluation, newX, newY):
         pos = 0
         while pos < len(toVisitList):
-            if ruleFunction(newX, newY, currentX, currentY, toVisitList[pos][0], toVisitList[pos][1], finalX, finalY) == True:
+            if positionEvaluation[(newX, newY)] <= positionEvaluation[toVisitList[pos]]:
                 # the distance of the new point is smaller than some point in the queue => we add it here
                 toVisitList.insert(pos, (newX, newY))
                 return
@@ -44,12 +37,17 @@ class Service:
     
     def searchGreedy(self, initialX, initialY, finalX, finalY):
         initialTime = datetime.now()
+        
         found = False
         visitedPositions = [] # holds pairs (x, y)
         leftToVisit = [] # holds pairs (x, y)
         leftToVisit.append((initialX, initialY))
         predecessorDictionary = {} # key = pair (x, y); value = pair (x, y); value = predecessor of key
         predecessorDictionary[(initialX, initialY)] = None
+        distanceFromSource = {} # key = pair(x, y); value = integer
+        distanceFromSource[(initialX, initialY)] = 0
+        positionEvaluation = {} # key = pair(x, y); value = integer
+        positionEvaluation[(initialX, initialY)] = 0 + self.__computeManhattanDistance(initialX, initialY, finalX, finalY)
         
         while not found and leftToVisit:
             crtX, crtY = leftToVisit.pop(0)
@@ -64,13 +62,15 @@ class Service:
                 newY = crtY + direction[1]
                 if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
                     predecessorDictionary[(newX, newY)] = (crtX, crtY)
-                    self.__addToQueueAccordingToRule(leftToVisit, newX, newY, crtX, crtY, finalX, finalY, self.__compareGreedy)
+                    distanceFromSource[(newX, newY)] = distanceFromSource[(crtX, crtY)] + 1
+                    positionEvaluation[(newX, newY)] = 0 + self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                    self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
         
         actualPath = self.__determineActualPath(predecessorDictionary, finalX, finalY)
         
         finalTime = datetime.now()
         print ("Greedy -> ", finalTime - initialTime)
-        return actualPath
+        return visitedPositions, actualPath # what if no path is found ?
     
     def searchAStar(self, initialX, initialY, finalX, finalY):
         pass
