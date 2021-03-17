@@ -1,6 +1,7 @@
-import pygame, time
+import pygame
 from constants import Constants
 from service import Service
+from pygame.constants import KEYDOWN
 
 class GUI:
     def __init__(self):
@@ -57,17 +58,24 @@ class GUI:
         mapImage.blit(droneImage, (self.__service.getDroneYCoord() * 20, self.__service.getDroneXCoord() * 20))
         return mapImage
     
+    def __waitForKeyboardInput(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    return
+            pygame.time.wait(1)
+    
     def start(self):
         self.__screen.blit(self.__drawDrone(self.__getMapImage()), (0, 0))
         pygame.display.update()
-        
-        visitedPositions, actualPath = self.__service.searchGreedy(2, 3, 13, 19)
+        visitedPositions, actualPath = self.__service.searchGreedy(2, 3, 19, 19)
         self.__displayWithPath(visitedPositions, actualPath)
+        self.__waitForKeyboardInput()
         
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    break
-            pygame.time.wait(1)
+        self.__screen.blit(self.__drawDrone(self.__getMapImage()), (0, 0))
+        pygame.display.update()
+        visitedPositions, actualPath = self.__service.searchAStar(2, 3, 19, 19)
+        self.__displayWithPath(visitedPositions, actualPath)
+        self.__waitForKeyboardInput()
 
         pygame.quit()

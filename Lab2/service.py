@@ -33,12 +33,10 @@ class Service:
             actualPath.append((newX, newY))
             newX, newY = predecessorDictionary[(newX, newY)]
         actualPath.append((newX, newY))
-        return reversed(actualPath)
+        actualPath.reverse()
+        return actualPath
     
-    def searchGreedy(self, initialX, initialY, finalX, finalY):
-        initialTime = datetime.now()
-        
-        found = False
+    def __initialiazeStructures(self, initialX, initialY, finalX, finalY):
         visitedPositions = [] # holds pairs (x, y)
         leftToVisit = [] # holds pairs (x, y)
         leftToVisit.append((initialX, initialY))
@@ -48,6 +46,14 @@ class Service:
         distanceFromSource[(initialX, initialY)] = 0
         positionEvaluation = {} # key = pair(x, y); value = integer
         positionEvaluation[(initialX, initialY)] = 0 + self.__computeManhattanDistance(initialX, initialY, finalX, finalY)
+        
+        return visitedPositions, leftToVisit, predecessorDictionary, distanceFromSource, positionEvaluation
+    
+    def __searchAlgorithm(self, initialX, initialY, finalX, finalY, searchType):
+        initialTime = datetime.now()
+        
+        found = False
+        visitedPositions, leftToVisit, predecessorDictionary, distanceFromSource, positionEvaluation = self.__initialiazeStructures(initialX, initialY, finalX, finalY)
         
         while not found and leftToVisit:
             crtX, crtY = leftToVisit.pop(0)
@@ -62,18 +68,27 @@ class Service:
                 newY = crtY + direction[1]
                 if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
                     predecessorDictionary[(newX, newY)] = (crtX, crtY)
-                    distanceFromSource[(newX, newY)] = distanceFromSource[(crtX, crtY)] + 1
-                    positionEvaluation[(newX, newY)] = 0 + self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                    if searchType == "A*":
+                        distanceFromSource[(newX, newY)] = distanceFromSource[(crtX, crtY)] + 1
+                        positionEvaluation[(newX, newY)] = distanceFromSource[(newX, newY)] + self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                    elif searchType == "Greedy":
+                        positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
                     self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
         
         actualPath = self.__determineActualPath(predecessorDictionary, finalX, finalY)
         
         finalTime = datetime.now()
-        print ("Greedy -> ", finalTime - initialTime)
+        print (searchType)
+        print (finalTime - initialTime) 
+        print ("Visited: ", len(visitedPositions))
+        print ("Path length: ", len(actualPath))
         return visitedPositions, actualPath # what if no path is found ?
     
+    def searchGreedy(self, initialX, initialY, finalX, finalY):
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "Greedy")
+    
     def searchAStar(self, initialX, initialY, finalX, finalY):
-        pass
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "A*")
     
     def getMapSurface(self):
         return self.__map.getMapSurface()
