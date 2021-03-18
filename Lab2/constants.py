@@ -25,3 +25,4 @@ class Constants:
     GREEDY_NAME = "Greedy"
     NORMAL_HILL_CLIMBING_NAME = "NormalHillClimbing"
     STEEPEST_HILL_CLIMBING_NAME = "SteepestHillClimbing"
+    DFS_NAME = "DFS"

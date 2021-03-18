@@ -29,5 +29,5 @@ class Constants:
     WALL = 1
     UNKNOWN_POSITION = -1
     
-    TIME_INTERVAL_BETWEEN_MOVES = 50 # in miliseconds
+    TIME_INTERVAL_BETWEEN_MOVES = 400 # in miliseconds
     TIME_INTERVAL_FINAL_WAIT = 2000 # in miliseconds

@@ -52,7 +52,7 @@ class Drone():
         for crtDirection in Constants.DIRECTIONS:
             newX = self.__x + crtDirection[0]
             newY = self.__y + crtDirection[1] 
-            if detectedMap.validCoordinates(newX, newY) and detectedMap.getValueOnPosition(newX, newY) == Constants.EMPTY_POSITION and (newX, newY) not in self.__visitedPositions:
+            if self.__validPosition(newX, newY) and detectedMap.getValueOnPosition(newX, newY) == Constants.EMPTY_POSITION and (newX, newY) not in self.__visitedPositions:
                 self.__positionStack.insert(0, (self.__x, self.__y))
                 self.__x = newX # we can advance, move to the position determined above
                 self.__y = newY

@@ -67,14 +67,18 @@ class GUI:
             pygame.time.wait(1)
     
     def __runAlgorithm(self, searchAlgorithm, initialX, initialY, finalX, finalY):
-        visitedPositions, actualPath = searchAlgorithm(initialX, initialY, finalX, finalY)
+        visitedPositions, actualPath, searchType, searchTime = searchAlgorithm(initialX, initialY, finalX, finalY)
+        print (searchType)
+        print (searchTime)
+        print ("Visited: ", len(visitedPositions))
+        print ("Path length: ", len(actualPath))
+        print()
         self.__displayWithPath(visitedPositions, actualPath)
         self.__waitForKeyboardInput()
     
     def start(self):
-        self.__runAlgorithm(self.__service.searchHillClimbing, 13, 5, 9, 12) # finds the path
-        self.__runAlgorithm(self.__service.searchHillClimbing, 2, 3, 19, 19) # doesn't find the path
-        self.__runAlgorithm(self.__service.searchGreedy, 2, 3, 19, 19)
+        self.__runAlgorithm(self.__service.searchDFS, 2, 3, 19, 19)
         self.__runAlgorithm(self.__service.searchAStar, 2, 3, 19, 19)
+        self.__runAlgorithm(self.__service.searchGreedy, 2, 3, 19, 19)
 
         pygame.quit()
