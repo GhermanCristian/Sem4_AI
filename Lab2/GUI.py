@@ -72,9 +72,9 @@ class GUI:
         self.__waitForKeyboardInput()
     
     def start(self):
+        self.__runAlgorithm(self.__service.searchHillClimbing, 13, 5, 9, 12) # finds the path
+        self.__runAlgorithm(self.__service.searchHillClimbing, 2, 3, 19, 19) # doesn't find the path
         self.__runAlgorithm(self.__service.searchGreedy, 2, 3, 19, 19)
         self.__runAlgorithm(self.__service.searchAStar, 2, 3, 19, 19)
-        self.__runAlgorithm(self.__service.searchHillClimbing, 2, 3, 3, 13) # finds the path
-        self.__runAlgorithm(self.__service.searchHillClimbing, 2, 3, 19, 19) # doesn't find the path
 
         pygame.quit()

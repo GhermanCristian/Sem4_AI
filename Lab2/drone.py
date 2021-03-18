@@ -8,3 +8,9 @@ class Drone():
     
     def getY(self):
         return self.__y
+    
+    def setX(self, newX):
+        self.__x = newX
+        
+    def setY(self, newY):
+        self.__y = newY

@@ -16,14 +16,17 @@ class Service:
     def __computeManhattanDistance(self, x1, y1, x2, y2):
         return abs(x1 - x2) + abs(y1 - y2)
     
+    def __compareFunction(self, firstPos, secondPos, positionEvaluation):
+        return positionEvaluation[firstPos] <= positionEvaluation[secondPos]
+    
     def __addToQueueAccordingToEvaluation(self, toVisitList, positionEvaluation, newX, newY):
-        pos = 0
-        while pos < len(toVisitList):
-            if positionEvaluation[(newX, newY)] <= positionEvaluation[toVisitList[pos]]:
+        idx = 0
+        while idx < len(toVisitList):
+            if self.__compareFunction((newX, newY), toVisitList[idx], positionEvaluation):
                 # the distance of the new point is smaller than some point in the queue => we add it here
-                toVisitList.insert(pos, (newX, newY))
+                toVisitList.insert(idx, (newX, newY))
                 return
-            pos += 1
+            idx += 1
         toVisitList.append((newX, newY)) # the new point has the largest distance => it's the last one => add it to the end
     
     def __determineActualPath(self, predecessorDictionary, finalX, finalY):
@@ -54,9 +57,44 @@ class Service:
         print (searchTime) 
         print ("Visited: ", visitedPositionsCount)
         print ("Path length: ", actualPathLength)
+        print ()
+    
+    def __processNeighboursGreedy(self, crtX, crtY, visitedPositions, predecessorDictionary, positionEvaluation, leftToVisit, finalX, finalY):
+        for direction in Constants.DIRECTIONS:
+            newX = crtX + direction[0]
+            newY = crtY + direction[1]
+            if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
+                predecessorDictionary[(newX, newY)] = (crtX, crtY)
+                positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
+                
+    def __processNeighboursAStar(self, crtX, crtY, visitedPositions, predecessorDictionary, distanceFromSource, positionEvaluation, leftToVisit, finalX, finalY):
+        for direction in Constants.DIRECTIONS:
+            newX = crtX + direction[0]
+            newY = crtY + direction[1]
+            if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
+                predecessorDictionary[(newX, newY)] = (crtX, crtY)
+                distanceFromSource[(newX, newY)] = distanceFromSource[(crtX, crtY)] + 1
+                positionEvaluation[(newX, newY)] = distanceFromSource[(newX, newY)] + self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
+                
+    def __processNeighboursSteepestHillClimbing(self, crtX, crtY, visitedPositions, predecessorDictionary, positionEvaluation, leftToVisit, finalX, finalY):
+        bestPosition = (crtX, crtY)
+        for direction in Constants.DIRECTIONS:
+            newX = crtX + direction[0]
+            newY = crtY + direction[1]
+            if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
+                predecessorDictionary[(newX, newY)] = (crtX, crtY)
+                positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                if self.__compareFunction((newX, newY), bestPosition, positionEvaluation):
+                    bestPosition = (newX, newY)
+        if bestPosition != (crtX, crtY):
+            leftToVisit.append(bestPosition)
     
     def __searchAlgorithm(self, initialX, initialY, finalX, finalY, searchType):
         initialTime = datetime.now()
+        self.__drone.setX(initialX)
+        self.__drone.setY(initialY)
         
         found = False
         visitedPositions, leftToVisit, predecessorDictionary, distanceFromSource, positionEvaluation = self.__initialiazeStructures(initialX, initialY, finalX, finalY)
@@ -69,21 +107,12 @@ class Service:
                 found = True
                 break
             
-            for direction in Constants.DIRECTIONS:
-                newX = crtX + direction[0]
-                newY = crtY + direction[1]
-                if self.__validCoordinates(newX, newY) and (newX, newY) not in visitedPositions:
-                    predecessorDictionary[(newX, newY)] = (crtX, crtY)
-                    if searchType == "A*":
-                        distanceFromSource[(newX, newY)] = distanceFromSource[(crtX, crtY)] + 1
-                        positionEvaluation[(newX, newY)] = distanceFromSource[(newX, newY)] + self.__computeManhattanDistance(newX, newY, finalX, finalY)
-                    elif searchType == "Greedy":
-                        positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
-                    elif searchType == "NormalHillClimbing":
-                        positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
-                        self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
-                        break
-                    self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
+            if searchType == Constants.GREEDY_NAME:
+                self.__processNeighboursGreedy(crtX, crtY, visitedPositions, predecessorDictionary, positionEvaluation, leftToVisit, finalX, finalY)
+            elif searchType == Constants.A_STAR_NAME:
+                self.__processNeighboursAStar(crtX, crtY, visitedPositions, predecessorDictionary, distanceFromSource, positionEvaluation, leftToVisit, finalX, finalY)
+            elif searchType == Constants.STEEPEST_HILL_CLIMBING_NAME:
+                self.__processNeighboursSteepestHillClimbing(crtX, crtY, visitedPositions, predecessorDictionary, positionEvaluation, leftToVisit, finalX, finalY)
         
         actualPath = []
         if found == True:
@@ -91,16 +120,16 @@ class Service:
         
         finalTime = datetime.now()
         self.__printAlgorithmResults(searchType, finalTime - initialTime, len(visitedPositions), len(actualPath))
-        return visitedPositions, actualPath # what if no path is found ?
+        return visitedPositions, actualPath
     
     def searchGreedy(self, initialX, initialY, finalX, finalY):
-        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "Greedy")
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, Constants.GREEDY_NAME)
     
     def searchAStar(self, initialX, initialY, finalX, finalY):
-        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "A*")
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, Constants.A_STAR_NAME)
     
     def searchHillClimbing(self, initialX, initialY, finalX, finalY):
-        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "NormalHillClimbing")
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, Constants.STEEPEST_HILL_CLIMBING_NAME)
     
     def getMapSurface(self):
         return self.__map.getMapSurface()

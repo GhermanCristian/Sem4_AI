@@ -20,3 +20,8 @@ class Constants:
     MAP_WIDTH = 20
     
     TIME_BETWEEN_MOVES = 150 # in miliseconds
+    
+    A_STAR_NAME = "A*"
+    GREEDY_NAME = "Greedy"
+    NORMAL_HILL_CLIMBING_NAME = "NormalHillClimbing"
+    STEEPEST_HILL_CLIMBING_NAME = "SteepestHillClimbing"
