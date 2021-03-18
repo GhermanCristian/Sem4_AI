@@ -49,6 +49,12 @@ class Service:
         
         return visitedPositions, leftToVisit, predecessorDictionary, distanceFromSource, positionEvaluation
     
+    def __printAlgorithmResults(self, searchType, searchTime, visitedPositionsCount, actualPathLength):
+        print (searchType)
+        print (searchTime) 
+        print ("Visited: ", visitedPositionsCount)
+        print ("Path length: ", actualPathLength)
+    
     def __searchAlgorithm(self, initialX, initialY, finalX, finalY, searchType):
         initialTime = datetime.now()
         
@@ -73,15 +79,18 @@ class Service:
                         positionEvaluation[(newX, newY)] = distanceFromSource[(newX, newY)] + self.__computeManhattanDistance(newX, newY, finalX, finalY)
                     elif searchType == "Greedy":
                         positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                    elif searchType == "NormalHillClimbing":
+                        positionEvaluation[(newX, newY)] = self.__computeManhattanDistance(newX, newY, finalX, finalY)
+                        self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
+                        break
                     self.__addToQueueAccordingToEvaluation(leftToVisit, positionEvaluation, newX, newY)
         
-        actualPath = self.__determineActualPath(predecessorDictionary, finalX, finalY)
+        actualPath = []
+        if found == True:
+            actualPath = self.__determineActualPath(predecessorDictionary, finalX, finalY)
         
         finalTime = datetime.now()
-        print (searchType)
-        print (finalTime - initialTime) 
-        print ("Visited: ", len(visitedPositions))
-        print ("Path length: ", len(actualPath))
+        self.__printAlgorithmResults(searchType, finalTime - initialTime, len(visitedPositions), len(actualPath))
         return visitedPositions, actualPath # what if no path is found ?
     
     def searchGreedy(self, initialX, initialY, finalX, finalY):
@@ -89,6 +98,9 @@ class Service:
     
     def searchAStar(self, initialX, initialY, finalX, finalY):
         return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "A*")
+    
+    def searchHillClimbing(self, initialX, initialY, finalX, finalY):
+        return self.__searchAlgorithm(initialX, initialY, finalX, finalY, "NormalHillClimbing")
     
     def getMapSurface(self):
         return self.__map.getMapSurface()
