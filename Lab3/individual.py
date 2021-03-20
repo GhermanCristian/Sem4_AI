@@ -207,6 +207,9 @@ class Population():
             x.computeFitness()
             
     def selection(self, k):
+        totalFitnessSum = 0
+        for individual in self.__individuals:
+            totalFitnessSum += individual.getFitness()
         return sorted(self.__individuals, key = lambda elem : elem.getFitness(), reverse=True)[:k]
     
     def getIndividuals(self):

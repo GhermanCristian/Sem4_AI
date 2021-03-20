@@ -1,6 +1,7 @@
 from map import Map
 from drone import Drone
 import random
+from constants import Constants
 
 class Service:
     def __init__(self, repository):
@@ -29,35 +30,22 @@ class Service:
         
         firstParent = individuals[firstParentIndex]
         secondParent = individuals[secondParentIndex]
-        offspring = firstParent.attemptCrossover(secondParent, 0.8)
+        offspring = firstParent.attemptCrossover(secondParent, Constants.CROSSOVER_PROBABILITY)
         if offspring is None:
             self.__repository.addExistingPopulation(population)
             return # the crossover was not done because it didn't meet the crossover probability
         
-        offspring.attemptMutation(0.04)
+        offspring.attemptMutation(Constants.MUTATION_PROBABILITY)
         offspring.computeFitness()
         population.addIndividual(offspring)
-
-        """offspringFitness = offspring.getFitness()
-        firstParentFitness = firstParent.getFitness()
-        secondParentFitness = secondParent.getFitness()
-        
-        if offspringFitness > secondParentFitness and firstParentFitness > secondParentFitness:
-            population.removeIndividualByIndex(secondParentIndex)
-            population.addIndividual(offspring)
-        elif offspringFitness > firstParentFitness and secondParentFitness > firstParentFitness:
-            population.removeIndividualByIndex(firstParentIndex)
-            population.addIndividual(offspring)"""
         
         self.__repository.addExistingPopulation(population) 
     
     def runGeneration(self):
-        iterations = 0
-        while iterations < 1000:
+        for iteration in range(Constants.ITERATIONS_PER_GENERATION):
             self.__iteration()
-            iterations += 1
         population = self.__repository.getPopulations().pop(0)
-        population.setIndividuals(population.selection(50))
+        population.setIndividuals(population.selection(Constants.POPULATION_SIZE))
         self.__repository.addExistingPopulation(population)
     
     def getMapSurface(self):

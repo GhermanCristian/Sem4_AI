@@ -1,10 +1,38 @@
 from GUI import GUI
-from individual import DFS, Individual, Population
-from map import Map
 from repository import Repository
 from service import Service
 import numpy
 import matplotlib.pyplot as plt
+from constants import Constants
+import random
+
+def simulateSeed():
+    repo = Repository()
+    service = Service(repo)
+    service.addNewPopulation(Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, (5, 5))
+    
+    bestIndividualFitness = 0
+    lastAverageFitness = 0
+    for generation in range(Constants.GENERATION_COUNT):
+        service.runGeneration()
+        population = service.getPopulations()[0]
+        populationFitness = []
+        for individual in population.getIndividuals():
+            populationFitness.append(individual.getFitness())
+        bestIndividualFitness = max(bestIndividualFitness, max(populationFitness))
+        lastAverageFitness = numpy.average(populationFitness)
+        
+    return lastAverageFitness, bestIndividualFitness
+
+def logToFile(solutionAverages):
+    logFile = open("results.txt", "a")
+    logFile.write("Seeds = [%d, %d]; " % (Constants.FIRST_SEED, Constants.LAST_SEED))
+    logFile.write("Pop.size = %d; Ind.size = %d; Generations = %d; " % (Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, Constants.GENERATION_COUNT))
+    logFile.write("Iterations/gen = %d; Mutation prob = %.2f; Crossover prob = %.2f\n" % (Constants.ITERATIONS_PER_GENERATION, Constants.MUTATION_PROBABILITY, Constants.CROSSOVER_PROBABILITY))
+    logFile.write("Average of averages: %.3f\n" % numpy.average(solutionAverages))
+    logFile.write("Stdev of averages: %.3f\n" % numpy.std(solutionAverages))
+    logFile.write("\n")
+    logFile.close()
 
 def main():
     # create a menu
@@ -21,38 +49,17 @@ def main():
     #              function gui.movingDrone(currentMap, path, speed, markseen)
     #              ATENTION! the function doesn't check if the path passes trough walls
 
-    repo = Repository()
-    service = Service(repo)
-    service.addNewPopulation(50, 35, (5, 5))
+    solutionAverages = [] # for each seed, average of the fitness for the final generation (= solution)
+    print ("seed - final gen fitness avg - bestFitness")
+    for i in range(Constants.FIRST_SEED, Constants.LAST_SEED):
+        random.seed(i)
+        finalGenerationAverage, bestFitness = simulateSeed()
+        print ("%0d - %.3f - %d" % (i, finalGenerationAverage, bestFitness))
+        solutionAverages.append(finalGenerationAverage)
     
-    
-    generation = 1
-    generationAverageFitness = []
-    generationFitnessStddev = []
-    bestPath = None
-    while generation <= 10:
-        print ("generation = ", generation)
-        service.runGeneration()
-        population = service.getPopulations()[0]
-        populationFitness = []
-        for individual in population.getIndividuals():
-            populationFitness.append(individual.getFitness())
-        print ("best individual fitness: ", max(populationFitness))
-        generationAverageFitness.append(numpy.average(populationFitness))
-        generationFitnessStddev.append(numpy.std(populationFitness))
-        bestPath = population.selection(1)[0]
-        print ("avg fitness: ", numpy.average(populationFitness))
-        print ()
-        generation += 1
-        
-    plt.plot(generationAverageFitness)
-    plt.savefig("avgFitness.png")
-    plt.clf()
-    plt.plot(generationFitnessStddev)
-    plt.savefig("avgStddev.png")
-    
-    newGUI = GUI(service)
-    newGUI.displayWithPath(bestPath.getChromosome())
+    logToFile(solutionAverages)
+    plt.plot(solutionAverages)
+    plt.savefig("solutionAverageFitness.png")
     
 if __name__ == "__main__":
     main()
