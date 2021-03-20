@@ -64,21 +64,24 @@ class PathFixer:
         self.__startingPoint = startingPoint
         self.__directionCodes = directionCodes
         self.__map = m
+        self.__visitedPositions = []
+        self.__visitedPositions.append(startingPoint)
     
     def __validPosition(self, newX, newY):
-        return 0 <= newX < Constants.MAP_HEIGHT and 0 <= newY < Constants.MAP_WIDTH and self.__map[newX][newY] == Constants.EMPTY_POSITION
-        # if I want no repeated positions, I also need to check (newX, newY) not in self.__visitedPositions
+        return 0 <= newX < Constants.MAP_HEIGHT and 0 <= newY < Constants.MAP_WIDTH and \
+            self.__map[newX][newY] == Constants.EMPTY_POSITION and (newX, newY) not in self.__visitedPositions
 
     def fixPath(self):
         crtX, crtY = self.__startingPoint
         validPathDirectionCodes = []
         for directionCode in self.__directionCodes:
             direction = Constants.DIRECTIONS[directionCode]
-            crtX += direction[0]
-            crtY += direction[1]
-            if not self.__validPosition(crtX, crtY):
-                break
-            validPathDirectionCodes.append(directionCode)
+            
+            if self.__validPosition(crtX + direction[0], crtY + direction[1]):
+                crtX += direction[0]
+                crtY += direction[1]
+                self.__visitedPositions.append((crtX, crtY))
+                validPathDirectionCodes.append(directionCode)
         
         return validPathDirectionCodes
 
@@ -147,7 +150,6 @@ class Individual:
     
     def __mutate(self):
         # perform a mutation with respect to the representation
-        #print ("mutate", "original chromosome: ", self.__chromosome)
         lastChromosomeIndex = len(self.__chromosome) - 1
         if random.random() < 0.15: 
             firstGene, lastGene = 0, lastChromosomeIndex // 2 # mutate something in the first half of the chromosome
@@ -158,7 +160,6 @@ class Individual:
         self.__chromosome[affectedGene] = (self.__chromosome[affectedGene] + random.randint(1, 3)) % 4
         
         self.__chromosome = PathFixer(self.__startingCoordinates, self.__chromosome, self.__map).fixPath()
-        #print ("modified chromosome: ", self.__chromosome)
     
     def attemptMutation(self, mutateProbability):
         if random.random() < mutateProbability:

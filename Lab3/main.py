@@ -4,6 +4,7 @@ from map import Map
 from repository import Repository
 from service import Service
 import numpy
+import matplotlib.pyplot as plt
 
 def main():
     # create a menu
@@ -22,11 +23,14 @@ def main():
 
     repo = Repository()
     service = Service(repo)
-    service.addNewPopulation(50, 30, (5, 5))
-    newGUI = GUI(service)
+    service.addNewPopulation(50, 35, (5, 5))
     
-    generation = 0
-    while generation < 30:
+    
+    generation = 1
+    generationAverageFitness = []
+    generationFitnessStddev = []
+    bestPath = None
+    while generation <= 10:
         print ("generation = ", generation)
         service.runGeneration()
         population = service.getPopulations()[0]
@@ -34,9 +38,21 @@ def main():
         for individual in population.getIndividuals():
             populationFitness.append(individual.getFitness())
         print ("best individual fitness: ", max(populationFitness))
+        generationAverageFitness.append(numpy.average(populationFitness))
+        generationFitnessStddev.append(numpy.std(populationFitness))
+        bestPath = population.selection(1)[0]
         print ("avg fitness: ", numpy.average(populationFitness))
         print ()
         generation += 1
+        
+    plt.plot(generationAverageFitness)
+    plt.savefig("avgFitness.png")
+    plt.clf()
+    plt.plot(generationFitnessStddev)
+    plt.savefig("avgStddev.png")
+    
+    newGUI = GUI(service)
+    newGUI.displayWithPath(bestPath.getChromosome())
     
 if __name__ == "__main__":
     main()

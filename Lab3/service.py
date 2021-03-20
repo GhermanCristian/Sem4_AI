@@ -53,7 +53,7 @@ class Service:
     
     def runGeneration(self):
         iterations = 0
-        while iterations < 100:
+        while iterations < 1000:
             self.__iteration()
             iterations += 1
         population = self.__repository.getPopulations().pop(0)
