@@ -7,7 +7,7 @@ class Map():
     def __init__(self):
         self.__n = Constants.MAP_HEIGHT
         self.__m = Constants.MAP_WIDTH
-        self.__surface = np.zeros((self.n, self.m))
+        self.__surface = np.zeros((self.__n, self.__m))
     
     def randomMap(self, fill = 0.15):
         for i in range(self.__n):
@@ -19,7 +19,7 @@ class Map():
         string=""
         for i in range(self.__n):
             for j in range(self.__m):
-                string = string + str(int(self.__surface[i][j]))
+                string = string + str(int(self.__surface[i][j])) + " "
             string = string + "\n"
         return string
                 
@@ -31,8 +31,8 @@ class Map():
     def loadMap(self, numfile):
         with open(numfile, "rb") as f:
             dummy = pickle.load(f)
-            self.__n = dummy.n
-            self.__m = dummy.m
+            self.__n = dummy.__n
+            self.__m = dummy.__m
             self.__surface = dummy.__surface
             f.close()
             

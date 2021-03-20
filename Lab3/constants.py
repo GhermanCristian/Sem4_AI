@@ -9,14 +9,18 @@ class Constants:
     
     #define directions
     UP = 0
+    RIGHT = 1
     DOWN = 2
-    LEFT = 1
-    RIGHT = 3
+    LEFT = 3
     
     #define indexes variations 
-    DIRECTIONS = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+    DIRECTIONS = [[-1, 0], [0, 1], [1, 0], [0, -1]]
     
     MAP_HEIGHT = 20 # in no. of tiles
     MAP_WIDTH = 20
     
-    TIME_BETWEEN_MOVES = 150 # in miliseconds
+    EMPTY_POSITION = 0
+    WALL_POSITION = 1
+    ACCESSIBLE_POSITION = 2
+    
+    TIME_BETWEEN_MOVES = 50 # in miliseconds

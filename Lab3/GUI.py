@@ -1,14 +1,16 @@
 import pygame
 from constants import Constants
-from service import Service
 from pygame.constants import KEYDOWN
 
 class GUI:
-    def __init__(self):
+    def __init__(self, service):
         self.__initPygame()
         self.__screen = pygame.display.set_mode((400,400))
         self.__screen.fill(Constants.WHITE)
-        self.__service = Service()
+        self.__service = service
+    
+    def getMapSurface(self):
+        return self.__service.getMapSurface()
     
     def __initPygame(self):
         pygame.init()
@@ -30,34 +32,33 @@ class GUI:
                 
         return image
     
-    def __moveDroneAlongPath(self, droneImage, pathImage, actualPath):
+    def __moveDroneAlongPath(self, droneImage, pathImage, pathAsDirectionCodes):
         pathTile = pygame.Surface((20,20))
         pathTile.fill(Constants.GREEN)
         
-        for position in actualPath:
-            pathImage.blit(pathTile, (position[1] * 20, position[0] * 20))
+        crtPosition = (5, 5)
+        
+        for directionCode in pathAsDirectionCodes:
+            pathImage.blit(pathTile, (crtPosition[1] * 20, crtPosition[0] * 20))
             pathImageCopy = pathImage.copy()
-            pathImageCopy.blit(droneImage, (position[1] * 20, position[0] * 20))
+            pathImageCopy.blit(droneImage, (crtPosition[1] * 20, crtPosition[0] * 20))
             self.__screen.blit(pathImageCopy, (0, 0))
             pygame.display.update()
             pygame.time.wait(Constants.TIME_BETWEEN_MOVES)
+            
+            direction = Constants.DIRECTIONS[directionCode]
+            crtPosition = (crtPosition[0] + direction[0], crtPosition[1] + direction[1])
     
-    def __displayWithPath(self, visitedPositions, actualPath):
+    def displayWithPath(self, pathAsDirectionCodes):
         droneImage = pygame.image.load("minune.jpg")
-        
-        visitedTile = pygame.Surface((20,20))
-        visitedTile.fill(Constants.RED)
         pathImage = self.__getMapImage()
-        
-        # show all the visited positions
-        for position in visitedPositions:
-            pathImage.blit(visitedTile, (position[1] * 20, position[0] * 20))
-        pathImage.blit(droneImage, (self.__service.getDroneYCoord() * 20, self.__service.getDroneXCoord() * 20))
+        #pathImage.blit(droneImage, (self.__service.getDroneYCoord() * 20, self.__service.getDroneXCoord() * 20))
         self.__screen.blit(pathImage, (0, 0))
         pygame.display.update()
         
         # then progressively show the actual path of the drone
-        self.__moveDroneAlongPath(droneImage, pathImage, actualPath)
+        self.__moveDroneAlongPath(droneImage, pathImage, pathAsDirectionCodes)
+        self.__waitForKeyboardInput()
     
     def __waitForKeyboardInput(self):
         while True:
