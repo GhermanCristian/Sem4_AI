@@ -151,12 +151,18 @@ class Individual:
     def __mutate(self):
         # perform a mutation with respect to the representation
         lastChromosomeIndex = len(self.__chromosome) - 1
-        if random.random() < 0.15: 
-            firstGene, lastGene = 0, lastChromosomeIndex // 2 # mutate something in the first half of the chromosome
+        if lastChromosomeIndex < 0:
+            return
+        if lastChromosomeIndex <= 3:
+            affectedGene = random.randint(0, lastChromosomeIndex)
         else:
-            firstGene, lastGene = lastChromosomeIndex // 2 + 1, lastChromosomeIndex # mutate sth in the second half of the chromosome
-
-        affectedGene = random.randint(firstGene, lastGene)
+            if random.random() < 0.15: 
+                firstGene, lastGene = 0, lastChromosomeIndex // 2 # mutate something in the first half of the chromosome
+            else:
+                firstGene, lastGene = lastChromosomeIndex // 2 + 1, lastChromosomeIndex # mutate sth in the second half of the chromosome
+    
+            affectedGene = random.randint(firstGene, lastGene)
+        #affectedGene = random.randint(0, len(self.__chromosome) - 1)
         self.__chromosome[affectedGene] = (self.__chromosome[affectedGene] + random.randint(1, 3)) % 4
         
         self.__chromosome = PathFixer(self.__startingCoordinates, self.__chromosome, self.__map).fixPath()

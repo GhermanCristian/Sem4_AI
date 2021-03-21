@@ -12,3 +12,6 @@ class Repository:
     
     def addExistingPopulation(self, newPopulation):
         self.__populations.append(newPopulation)
+        
+    def removeAllPopulations(self):
+        self.__populations.clear()
