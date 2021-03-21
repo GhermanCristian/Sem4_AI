@@ -1,83 +1,32 @@
--- with the biased mutation
-Seeds = [1, 5]; Pop.size = 50; Ind.size = 35; Generations = 12; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 210.720
-Stdev of averages: 2.509
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 12; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages:  212.304
-Stdev of averages:  3.406
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 12; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 212.304
-Stdev of averages: 3.406
-
-Seeds = [1, 30]; Pop.size = 50; Ind.size = 35; Generations = 14; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 211.782
-Stdev of averages: 2.527
-
-Seeds = [50, 100]; Pop.size = 50; Ind.size = 35; Generations = 13; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 211.770
-Stdev of averages: 2.703
-
-Seeds = [50, 100]; Pop.size = 50; Ind.size = 35; Generations = 13; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 211.397
-Stdev of averages: 4.039
-
--- with the normal mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 12; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 211.582
-Stdev of averages: 4.109
-
--- with the biased mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 12; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 212.304
-Stdev of averages: 3.406
-
--- with the normal mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 1500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 212.588
-Stdev of averages: 2.975
-
--- with the biased mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 1500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 212.389
-Stdev of averages: 3.445
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 150; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 210.722
-Stdev of averages: 4.385
-
--- with the normal mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 150; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 209.325
-Stdev of averages: 4.947
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 211.687
-Stdev of averages: 3.851
-
--- with the biased mutation
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 35; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 212.057
-Stdev of averages: 3.360
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 15; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 148.959
-Stdev of averages: 0.283
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 15; Generations = 15; Iterations/gen = 50; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 147.213
-Stdev of averages: 3.662
-
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 50; Generations = 15; Iterations/gen = 1500; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 246.022
-Stdev of averages: 8.843
-
+2021-03-21 21:43:20.902934
 Seeds = [1, 50]; Pop.size = 50; Ind.size = 50; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 235.254
-Stdev of averages: 8.170
+Average of averages: 242.689
+Stdev of averages: 7.993
 
-Seeds = [1, 50]; Pop.size = 50; Ind.size = 50; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 235.254
-Stdev of averages: 8.170
+2021-03-21 21:46:08.571827
+Seeds = [1, 50]; Pop.size = 40; Ind.size = 50; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 243.219
+Stdev of averages: 8.441
+
+2021-03-21 21:50:32.022752
+Seeds = [1, 50]; Pop.size = 40; Ind.size = 50; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 245.708
+Stdev of averages: 7.656
+
+2021-03-21 21:55:03.315114
+Seeds = [1, 50]; Pop.size = 50; Ind.size = 40; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 237.649
+Stdev of averages: 7.618
+
+-- with the normal mutation
+2021-03-21 22:00:13.191244
+Seeds = [1, 50]; Pop.size = 50; Ind.size = 40; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 236.324
+Stdev of averages: 8.480
+
+-- with the biased mutation
+2021-03-21 22:10:35.582546
+Seeds = [1, 50]; Pop.size = 50; Ind.size = 50; Generations = 15; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 248.369
+Stdev of averages: 7.616
 

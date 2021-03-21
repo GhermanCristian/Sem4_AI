@@ -1,4 +1,4 @@
-from individual import Population
+from domain.population import Population
 
 class Repository:
     def __init__(self):

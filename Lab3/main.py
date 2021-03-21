@@ -4,6 +4,7 @@ from service import Service
 import numpy
 import matplotlib.pyplot as plt
 from constants import Constants
+from datetime import datetime
 
 def plotGraph(solutionAverages):
     plt.plot(solutionAverages)
@@ -11,6 +12,7 @@ def plotGraph(solutionAverages):
 
 def logToFile(solutionAverages):
     logFile = open("results.txt", "a")
+    logFile.write(str(datetime.now()) + "\n")
     logFile.write("Seeds = [%d, %d]; " % (Constants.FIRST_SEED, Constants.LAST_SEED))
     logFile.write("Pop.size = %d; Ind.size = %d; Generations = %d; " % (Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, Constants.GENERATION_COUNT))
     logFile.write("Iterations/gen = %d; Mutation prob = %.2f; Crossover prob = %.2f\n" % (Constants.ITERATIONS_PER_GENERATION, Constants.MUTATION_PROBABILITY, Constants.CROSSOVER_PROBABILITY))

@@ -1,5 +1,5 @@
-from map import Map
-from drone import Drone
+from domain.map import Map
+from domain.drone import Drone
 import random
 from constants import Constants
 import numpy as np
