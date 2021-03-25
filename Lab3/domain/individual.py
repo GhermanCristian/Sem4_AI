@@ -3,6 +3,7 @@ from constants import Constants
 from domain.DFS import DFS
 from domain.pathFixer import PathFixer
 
+
 class Individual:
     def __init__(self, maxSize, startingCoordinates, m):
         self.__maxSize = maxSize # this will be the number of genes = path length - 1
@@ -113,4 +114,3 @@ class Individual:
             return self.__crossover(otherParent)
         
         return None
-    
