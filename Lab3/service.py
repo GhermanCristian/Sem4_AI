@@ -12,8 +12,16 @@ class Service:
         # self.__map.saveMap("test1.map")
         self.__map.loadMap("test1.map")
         self.__mapSurface = self.__map.getMapSurface()
-        self.__drone = Drone(5, 5)  # I'll place it by default on an empty position
+        self.__drone = Drone(5, 5)  # this is the default position; if occupied => change it
+        self.__placeDroneOnEmptyPosition()
         self.__repository = repository
+
+    def __placeDroneOnEmptyPosition(self):
+        crtX, crtY = self.__drone.getX(), self.__drone.getY()
+        while self.__mapSurface[crtX][crtY] == Constants.WALL_POSITION:
+            crtX, crtY = random.randint(0, Constants.MAP_HEIGHT), random.randint(0, Constants.MAP_WIDTH)
+        self.__drone.setX(crtX)
+        self.__drone.setY(crtY)
 
     def getPopulations(self):
         return self.__repository.getPopulations()
@@ -50,8 +58,7 @@ class Service:
     def simulateSeed(self, crtSeed):
         random.seed(crtSeed)
         self.__repository.removeAllPopulations()
-        self.__repository.addNewPopulation(Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, (5, 5),
-                                           self.__mapSurface)
+        self.__repository.addNewPopulation(Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, (self.__drone.getX(), self.__drone.getY()), self.__mapSurface)
 
         bestIndividual = None
         lastAverageFitness = 0

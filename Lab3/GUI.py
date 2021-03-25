@@ -37,7 +37,7 @@ class GUI:
         pathTile = pygame.Surface((20, 20))
         pathTile.fill(Constants.GREEN)
 
-        crtPosition = (5, 5)
+        crtPosition = (self.__service.getDroneXCoord(), self.__service.getDroneYCoord())
 
         for directionCode in pathAsDirectionCodes:
             pathImage.blit(pathTile, (crtPosition[1] * 20, crtPosition[0] * 20))

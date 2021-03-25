@@ -65,3 +65,8 @@ Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen 
 Average of averages: 209.917
 Stdev of averages: 6.375
 
+2021-03-25 10:45:42.255848
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 209.917
+Stdev of averages: 6.375
+

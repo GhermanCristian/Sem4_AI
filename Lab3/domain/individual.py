@@ -22,7 +22,7 @@ class Individual:
         return self.__chromosome
     
     def getFitness(self):
-        return self.__fitness # it might be none, if we haven't computed the fitness for this individual until now
+        return self.__fitness # it might be none, if we haven't computed the fitness for this individual yet
     
     def __checkEmptyAndUpdateAccessibleCount(self, crtCoords, temporaryMatrix):
         if temporaryMatrix[crtCoords[0]][crtCoords[1]] == Constants.ACCESSIBLE_POSITION:
