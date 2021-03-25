@@ -28,7 +28,7 @@ class GUI:
         mapSurface = self.__service.getMapSurface()
         for i in range(Constants.MAP_HEIGHT):
             for j in range(Constants.MAP_WIDTH):
-                if (mapSurface[i][j] == 1):
+                if mapSurface[i][j] == Constants.WALL_POSITION:
                     image.blit(brick, (j * 20, i * 20))
 
         return image
@@ -76,7 +76,7 @@ class GUI:
         solutionAverages, bestIndividuals, runningTimes = self.__service.runProgram()
         self.__waitForKeyboardInput()
 
-        """bestIndividuals.sort(key=lambda elem: elem.getFitness(), reverse=True)
+        bestIndividuals.sort(key=lambda elem: elem.getFitness(), reverse=True)
         for i in bestIndividuals[:5]:
-            self.displayWithPath(i.getChromosome())"""
+            self.displayWithPath(i.getChromosome())
         return solutionAverages, runningTimes

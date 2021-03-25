@@ -103,8 +103,7 @@ class Individual:
             # remove a section of length = extraLength
             firstRemovedIndex = random.randint(0, len(newChromosome) - extraLength - 1)
             lastRemovedIndex = firstRemovedIndex + extraLength
-            del newChromosome[firstRemovedIndex : lastRemovedIndex + 1]
-            # +1 because python slices don't include the last elem
+            del newChromosome[firstRemovedIndex : lastRemovedIndex + 1]  # +1 because python slices don't include the last elem
 
         offspring.setChromosome(PathFixer(self.__startingCoordinates, newChromosome, self.__map).fixPath())
         return offspring

@@ -123,3 +123,81 @@ Total time: 0:05:58.479023
 Average of averages: 241.970
 Stdev of averages: 0.207
 
+2021-03-25 17:04:27.320851
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 11; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:02:29.648902
+Average of averages: 241.376
+Stdev of averages: 2.144
+
+2021-03-25 17:08:15.785671
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 12; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:02:46.541281
+Average of averages: 241.464
+Stdev of averages: 2.118
+
+2021-03-25 17:25:27.491964
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 13; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:06:07.277327
+Average of averages: 242.000
+Stdev of averages: 0.000
+
+2021-03-25 17:30:31.282521
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 20; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:00:53.405394
+Average of averages: 237.821
+Stdev of averages: 5.577
+
+2021-03-25 17:32:18.952368
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 25; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:01:08.318635
+Average of averages: 239.702
+Stdev of averages: 3.625
+
+2021-03-25 17:34:51.639926
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 30; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:01:18.974511
+Average of averages: 240.575
+Stdev of averages: 2.678
+
+2021-03-25 17:38:04.553828
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 35; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:01:30.982602
+Average of averages: 240.949
+Stdev of averages: 2.442
+
+2021-03-25 17:41:09.507930
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 40; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:01:45.883550
+Average of averages: 241.056
+Stdev of averages: 2.403
+
+2021-03-25 17:43:55.359378
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 45; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:01:58.997925
+Average of averages: 241.185
+Stdev of averages: 2.344
+
+2021-03-25 17:47:33.644419
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 50; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:02:20.008195
+Average of averages: 241.214
+Stdev of averages: 2.334
+
+2021-03-25 17:51:13.027255
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 55; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:02:31.848010
+Average of averages: 241.300
+Stdev of averages: 2.329
+
+2021-03-25 18:00:11.078393
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 130; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:05:59.874849
+Average of averages: 241.571
+Stdev of averages: 2.080
+
+2021-03-25 18:21:23.085899
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 20; Iterations/gen = 94; Mutation prob = 0.05; Crossover prob = 0.80
+Total time: 0:00:57.130256
+Average of averages: 237.821
+Stdev of averages: 5.577
+

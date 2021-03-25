@@ -40,12 +40,12 @@ class Service:
             return  # the crossover was not done because it didn't meet the crossover probability
 
         offspring.attemptMutation(Constants.MUTATION_PROBABILITY)
+        offspring.computeFitness()
         population.addIndividual(offspring)
 
     def __runGeneration(self, population):
         for iteration in range(Constants.ITERATIONS_PER_GENERATION):
             self.__iteration(population)
-        population.evaluate()
         population.setIndividuals(population.selection(Constants.POPULATION_SIZE))
         self.__repository.setLastPopulation(population)
 
