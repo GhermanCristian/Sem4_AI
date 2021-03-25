@@ -5,14 +5,14 @@ class Repository:
     def __init__(self):
         self.__populations = []
         
-    def addNewPopulation(self, populationSize, individualMaxSize, startingCoordinates, m):
-        self.__populations.append(Population(populationSize, individualMaxSize, startingCoordinates, m))
-        
+    def addPopulation(self, population):
+        self.__populations.append(population)
+
+    def setLastPopulation(self, population):
+        self.__populations[-1] = population
+
     def getPopulations(self):
         return self.__populations
-    
-    def addExistingPopulation(self, newPopulation):
-        self.__populations.append(newPopulation)
         
     def removeAllPopulations(self):
         self.__populations.clear()

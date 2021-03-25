@@ -4,6 +4,9 @@ import random
 from constants import Constants
 import numpy as np
 
+from domain.pathFixer import PathFixer
+from domain.population import Population
+
 
 class Service:
     def __init__(self, repository):
@@ -23,11 +26,7 @@ class Service:
         self.__drone.setX(crtX)
         self.__drone.setY(crtY)
 
-    def getPopulations(self):
-        return self.__repository.getPopulations()
-
-    def __iteration(self):
-        population = self.__repository.getPopulations().pop(0)
+    def __iteration(self, population):
         individuals = population.getIndividuals()
 
         firstParentIndex = random.randint(0, len(individuals) - 1)
@@ -39,36 +38,31 @@ class Service:
         secondParent = individuals[secondParentIndex]
         offspring = firstParent.attemptCrossover(secondParent, Constants.CROSSOVER_PROBABILITY)
         if offspring is None:
-            self.__repository.addExistingPopulation(population)
             return  # the crossover was not done because it didn't meet the crossover probability
 
         offspring.attemptMutation(Constants.MUTATION_PROBABILITY)
         offspring.computeFitness()
         population.addIndividual(offspring)
 
-        self.__repository.addExistingPopulation(population)
-
-    def __runGeneration(self):
+    def __runGeneration(self, population):
         for iteration in range(Constants.ITERATIONS_PER_GENERATION):
-            self.__iteration()
-        population = self.__repository.getPopulations().pop(0)
+            self.__iteration(population)
         population.setIndividuals(population.selection(Constants.POPULATION_SIZE))
-        self.__repository.addExistingPopulation(population)
+        self.__repository.setLastPopulation(population)
 
     def simulateSeed(self, crtSeed):
         random.seed(crtSeed)
-        self.__repository.removeAllPopulations()
-        self.__repository.addNewPopulation(Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, (self.__drone.getX(), self.__drone.getY()), self.__mapSurface)
+        newPopulation = Population(Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, (self.__drone.getX(), self.__drone.getY()), self.__mapSurface)
+        self.__repository.addPopulation(newPopulation)
 
         bestIndividual = None
         lastAverageFitness = 0
         for generation in range(Constants.GENERATION_COUNT):
-            self.__runGeneration()
-            population = self.getPopulations()[0]
+            self.__runGeneration(newPopulation)
             populationFitness = []
-            for individual in population.getIndividuals():
+            for individual in newPopulation.getIndividuals():
                 populationFitness.append(individual.getFitness())
-            bestIndividual = population.selection(1)[0]
+            bestIndividual = newPopulation.selection(1)[0]
             lastAverageFitness = np.average(populationFitness)
 
         return lastAverageFitness, bestIndividual

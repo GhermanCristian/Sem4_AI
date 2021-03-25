@@ -14,7 +14,7 @@ class Map():
         for i in range(self.__n):
             for j in range(self.__m):
                 if random() <= fill:
-                    self.__surface[i][j] = 1
+                    self.__surface[i][j] = Constants.WALL_POSITION
 
     def __str__(self):
         string = ""

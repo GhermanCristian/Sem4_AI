@@ -71,6 +71,7 @@ class GUI:
     def start(self):
         solutionAverages, bestIndividuals = self.__service.runProgram()
         self.__waitForKeyboardInput()
+
         bestIndividuals.sort(key=lambda elem: elem.getFitness(), reverse=True)
         for i in bestIndividuals[:5]:
             self.displayWithPath(i.getChromosome())

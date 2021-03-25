@@ -60,13 +60,34 @@ Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen 
 Average of averages: 214.470
 Stdev of averages: 4.042
 
-2021-03-25 10:23:52.554614
-Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 209.917
-Stdev of averages: 6.375
+-- changed the crossover algorithm
+2021-03-25 13:47:02.495240
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 213.767
+Stdev of averages: 1.259
 
-2021-03-25 10:45:42.255848
-Seeds = [1, 50]; Pop.size = 75; Ind.size = 30; Generations = 15; Iterations/gen = 100; Mutation prob = 0.05; Crossover prob = 0.80
-Average of averages: 209.917
-Stdev of averages: 6.375
+2021-03-25 14:08:04.694845
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 15; Iterations/gen = 1000; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 242.000
+Stdev of averages: 0.000
+
+2021-03-25 14:20:30.763857
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 15; Iterations/gen = 500; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 241.592
+Stdev of averages: 2.050
+
+2021-03-25 14:28:55.182684
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 15; Iterations/gen = 135; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 236.410
+Stdev of averages: 5.101
+
+2021-03-25 14:47:00.338752
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 15; Iterations/gen = 750; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 241.653
+Stdev of averages: 1.685
+
+2021-03-25 14:56:11.788595
+Seeds = [1, 50]; Pop.size = 75; Ind.size = 40; Generations = 15; Iterations/gen = 900; Mutation prob = 0.05; Crossover prob = 0.80
+Average of averages: 241.735
+Stdev of averages: 1.319
 
