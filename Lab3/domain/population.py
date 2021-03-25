@@ -9,8 +9,8 @@ class Population:
         for i in range(populationSize):
             newIndividual = Individual(individualMaxSize, startingCoordinates, self.__map)
             newIndividual.generateChromosome()
-            newIndividual.computeFitness()
             self.__individuals.append(newIndividual)
+        self.evaluate()
 
     def evaluate(self):
         for x in self.__individuals:

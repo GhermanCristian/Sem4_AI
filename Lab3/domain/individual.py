@@ -58,9 +58,7 @@ class Individual:
 
     def computeFitness(self):
         temporaryMatrix = self.__map.copy()
-
         crtCoords = self.__startingCoordinates
-        # each gene is the code for a direction (UP = 0, DOWN = 2, LEFT = 1, RIGHT = 3)
         self.__fitness = self.__markAndCountNewAccessible(temporaryMatrix, crtCoords)
 
         # we also assume that the path is correct in this point; it is fixed when mutating or doing a crossover
@@ -109,8 +107,6 @@ class Individual:
             # +1 because python slices don't include the last elem
 
         offspring.setChromosome(PathFixer(self.__startingCoordinates, newChromosome, self.__map).fixPath())
-        if len(offspring.getChromosome()) > self.__maxSize:
-            print("problem")
         return offspring
 
     def attemptCrossover(self, otherParent, crossoverProbability):

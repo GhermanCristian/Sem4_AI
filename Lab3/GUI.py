@@ -50,13 +50,16 @@ class GUI:
             direction = Constants.DIRECTIONS[directionCode]
             crtPosition = (crtPosition[0] + direction[0], crtPosition[1] + direction[1])
 
-    def displayWithPath(self, pathAsDirectionCodes):
+    def __displayMap(self):
         droneImage = pygame.image.load("minune.jpg")
         pathImage = self.__getMapImage()
-        # pathImage.blit(droneImage, (self.__service.getDroneYCoord() * 20, self.__service.getDroneXCoord() * 20))
+        pathImage.blit(droneImage, (self.__service.getDroneYCoord() * 20, self.__service.getDroneXCoord() * 20))
         self.__screen.blit(pathImage, (0, 0))
         pygame.display.update()
+        return droneImage, pathImage
 
+    def displayWithPath(self, pathAsDirectionCodes):
+        droneImage, pathImage = self.__displayMap()
         # then progressively show the actual path of the drone
         self.__moveDroneAlongPath(droneImage, pathImage, pathAsDirectionCodes)
         self.__waitForKeyboardInput()
@@ -69,10 +72,11 @@ class GUI:
             pygame.time.wait(1)
 
     def start(self):
-        solutionAverages, bestIndividuals = self.__service.runProgram()
+        self.__displayMap()
+        solutionAverages, bestIndividuals, runningTimes = self.__service.runProgram()
         self.__waitForKeyboardInput()
 
-        bestIndividuals.sort(key=lambda elem: elem.getFitness(), reverse=True)
+        """bestIndividuals.sort(key=lambda elem: elem.getFitness(), reverse=True)
         for i in bestIndividuals[:5]:
-            self.displayWithPath(i.getChromosome())
-        return solutionAverages
+            self.displayWithPath(i.getChromosome())"""
+        return solutionAverages, runningTimes

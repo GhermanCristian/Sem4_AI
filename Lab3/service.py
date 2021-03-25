@@ -3,9 +3,8 @@ from domain.drone import Drone
 import random
 from constants import Constants
 import numpy as np
-
-from domain.pathFixer import PathFixer
 from domain.population import Population
+from datetime import datetime
 
 
 class Service:
@@ -41,12 +40,12 @@ class Service:
             return  # the crossover was not done because it didn't meet the crossover probability
 
         offspring.attemptMutation(Constants.MUTATION_PROBABILITY)
-        offspring.computeFitness()
         population.addIndividual(offspring)
 
     def __runGeneration(self, population):
         for iteration in range(Constants.ITERATIONS_PER_GENERATION):
             self.__iteration(population)
+        population.evaluate()
         population.setIndividuals(population.selection(Constants.POPULATION_SIZE))
         self.__repository.setLastPopulation(population)
 
@@ -71,13 +70,15 @@ class Service:
         solutionAverages = []  # for each seed, average of the fitness for the final generation (= solution)
         bestIndividuals = []
         print("seed - final gen fitness avg - bestFitness")
+        initialTime = datetime.now()
         for seed in range(Constants.FIRST_SEED, Constants.LAST_SEED):
             finalGenerationAverage, bestIndividual = self.simulateSeed(seed)
             print("%02d - %.3f - %d" % (seed, finalGenerationAverage, bestIndividual.getFitness()))
             solutionAverages.append(finalGenerationAverage)
             bestIndividuals.append(bestIndividual)
 
-        return solutionAverages, bestIndividuals
+        finalTime = datetime.now()
+        return solutionAverages, bestIndividuals, finalTime - initialTime
 
     def getMapSurface(self):
         return self.__map.getMapSurface()

@@ -12,7 +12,7 @@ def plotGraph(solutionAverages):
     plt.savefig("solutionAverageFitness.png")
 
 
-def logToFile(solutionAverages):
+def logToFile(solutionAverages, totalTime):
     logFile = open("results.txt", "a")
     logFile.write(str(datetime.now()) + "\n")
     logFile.write("Seeds = [%d, %d]; " % (Constants.FIRST_SEED, Constants.LAST_SEED))
@@ -20,6 +20,7 @@ def logToFile(solutionAverages):
         Constants.POPULATION_SIZE, Constants.MAX_INDIVIDUAL_SIZE, Constants.GENERATION_COUNT))
     logFile.write("Iterations/gen = %d; Mutation prob = %.2f; Crossover prob = %.2f\n" % (
         Constants.ITERATIONS_PER_GENERATION, Constants.MUTATION_PROBABILITY, Constants.CROSSOVER_PROBABILITY))
+    logFile.write("Total time: %s\n" % str(totalTime))
     logFile.write("Average of averages: %.3f\n" % numpy.average(solutionAverages))
     logFile.write("Stdev of averages: %.3f\n" % numpy.std(solutionAverages))
     logFile.write("\n")
@@ -29,9 +30,9 @@ def logToFile(solutionAverages):
 def main():
     repository = Repository()
     service = Service(repository)
-    solutionAverages = GUI(service).start()
+    solutionAverages, totalTime = GUI(service).start()
     plotGraph(solutionAverages)
-    logToFile(solutionAverages)
+    logToFile(solutionAverages, totalTime)
 
 
 if __name__ == "__main__":

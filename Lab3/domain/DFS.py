@@ -12,8 +12,7 @@ class DFS:
         self.__alreadyFound = False
         self.__initialX, self.__initialY = initialX, initialY
         self.__finalX, self.__finalY = initialX, initialY
-        self.__newDirections = random.sample(Constants.DIRECTIONS, 4)
-        # otherwise everyone would have the same path every time
+        self.__newDirections = random.sample(Constants.DIRECTIONS, 4)  # otherwise everyone would have the same path every time
 
     def __DFS(self, crtX, crtY, crtLength):
         if self.__alreadyFound:
@@ -28,9 +27,7 @@ class DFS:
         for direction in self.__newDirections:
             newX = crtX + direction[0]
             newY = crtY + direction[1]
-            if (newX,
-                newY) not in self.__visitedPositions and 0 <= newX < Constants.MAP_HEIGHT and 0 <= newY < Constants.MAP_WIDTH \
-                    and self.__map[newX][newY] == Constants.EMPTY_POSITION:
+            if (newX, newY) not in self.__visitedPositions and 0 <= newX < Constants.MAP_HEIGHT and 0 <= newY < Constants.MAP_WIDTH and self.__map[newX][newY] == Constants.EMPTY_POSITION:
                 self.__predecessor[(newX, newY)] = (crtX, crtY)
                 self.__visitedPositions.append((newX, newY))
                 self.__DFS(newX, newY, crtLength + 1)
