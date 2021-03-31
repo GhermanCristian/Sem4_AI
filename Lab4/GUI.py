@@ -22,14 +22,18 @@ class GUI:
     def __getMapImage(self, colour = Constants.BLUE, background = Constants.WHITE):
         image = pygame.Surface((400, 400))
         brick = pygame.Surface((20, 20))
+        sensor = pygame.Surface((20, 20))
         brick.fill(colour)
         image.fill(background)
+        sensor.fill(Constants.PINK)
 
         mapSurface = self.__service.getMapSurface()
         for i in range(Constants.MAP_HEIGHT):
             for j in range(Constants.MAP_WIDTH):
                 if mapSurface[i][j] == Constants.WALL_POSITION:
                     image.blit(brick, (j * 20, i * 20))
+                elif mapSurface[i][j] == Constants.SENSOR_POSITION:
+                    image.blit(sensor, (j * 20, i * 20))
 
         return image
 

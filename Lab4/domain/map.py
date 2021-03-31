@@ -39,3 +39,6 @@ class Map():
 
     def getMapSurface(self):
         return self.__surface
+
+    def setValueOnPosition(self, xCoord, yCoord, newValue):
+        self.__surface[xCoord][yCoord] = newValue

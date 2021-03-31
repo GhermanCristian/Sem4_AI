@@ -6,6 +6,7 @@ class Constants:
     GREEN = (0, 255, 0)
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
+    PINK = (255, 20, 147)
 
     # define directions
     UP = 0
@@ -22,6 +23,7 @@ class Constants:
     EMPTY_POSITION = 0
     WALL_POSITION = 1
     ACCESSIBLE_POSITION = 2
+    SENSOR_POSITION = 3
 
     TIME_BETWEEN_MOVES = 50  # in milliseconds
     POPULATION_SIZE = 75
@@ -34,3 +36,5 @@ class Constants:
 
     FIRST_SEED = 1
     LAST_SEED = 50
+
+    SENSOR_COUNT = 8
