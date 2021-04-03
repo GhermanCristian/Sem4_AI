@@ -58,6 +58,9 @@ class Service:
         return bestAnt.getPath()
 
     def __computePathLength(self, path):
+        if not path:
+            return Constants.INFINITY
+
         length = 0
         for i in range(len(path) - 1):
             crtSensor = path[i]
@@ -66,12 +69,12 @@ class Service:
         return length
 
     def run(self):
-        bestSolution = []
+        bestSolution = []  # the one with the lowest cost path
 
         print("Starting")
         for epoch in range(Constants.EPOCH_COUNT):
             currentSolution = self.__simulateEpoch(Constants.ANT_COUNT, Constants.ALPHA, Constants.BETA, Constants.Q0, Constants.RHO)
-            if self.__computePathLength(currentSolution) > self.__computePathLength(bestSolution):
+            if self.__computePathLength(currentSolution) < self.__computePathLength(bestSolution):
                 bestSolution = currentSolution.copy()
 
         print("Best path length = ", self.__computePathLength(bestSolution))
