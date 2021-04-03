@@ -55,3 +55,4 @@ class GUI:
     def start(self):
         self.__displayMap()
         self.__waitForKeyboardInput()
+        self.__service.run()

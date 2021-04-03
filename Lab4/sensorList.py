@@ -13,6 +13,7 @@ class SensorList:
 
         self.__distancesBetweenSensors = [[0 for i in range(Constants.SENSOR_COUNT)] for j in range(Constants.SENSOR_COUNT)]
         self.__computeDistancesBetweenSensors()
+        self.__maxPossibleDistance = self.__computeMaxPossibleDistance()
 
         for sensor in self.__sensorList:
             sensor.computeAccessiblePositions(self.__mapSurface)
@@ -40,3 +41,14 @@ class SensorList:
 
     def getDistanceBetweenSensors(self):
         return self.__distancesBetweenSensors
+
+    def __computeMaxPossibleDistance(self):
+        maxDistance = 0
+        for i in range(len(self.__distancesBetweenSensors)):
+            tempMax = max(self.__distancesBetweenSensors[i])
+            if maxDistance < tempMax:
+                maxDistance = tempMax
+        return maxDistance * Constants.SENSOR_COUNT
+
+    def getMaxPossibleDistance(self):
+        return self.__maxPossibleDistance

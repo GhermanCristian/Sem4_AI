@@ -26,6 +26,11 @@ class Constants:
     SENSOR_POSITION = 3
 
     TIME_BETWEEN_MOVES = 50  # in milliseconds
-    INFINITY = 999999999
-
     SENSOR_COUNT = 8
+    INFINITY = 999999999
+    EPOCH_COUNT = 1000
+    ANT_COUNT = SENSOR_COUNT
+    ALPHA = 1.9
+    BETA = 0.9
+    RHO = 0.05
+    Q0 = 1  # this will have to be changed to sth like 0.5 when implementing the roulette selection
