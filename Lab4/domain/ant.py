@@ -19,11 +19,11 @@ class Ant:
         currentSensorIndex = self.__path[-1]
         nextSensorProbability = [0 for i in range(self.__size)]
 
-        for moveIndex in range(len(possibleMoves)):
+        for moveIndex in possibleMoves:
             distanceToNextSensor = distanceTable[currentSensorIndex][moveIndex]
             pheromoneToNextSensor = pheromoneTable[currentSensorIndex][moveIndex]
             probability = (distanceToNextSensor ** beta) * (pheromoneToNextSensor ** alpha)
-            nextSensorProbability.append(probability)
+            nextSensorProbability[moveIndex] = probability
 
         return nextSensorProbability
 
@@ -38,7 +38,7 @@ class Ant:
             bestProbability = max(nextSensorProbability)
             self.__path.append(nextSensorProbability.index(bestProbability))
         else:
-            # all moves have a prob of being chosen (roulettte)
+            # all moves have a prob of being chosen (roulette)
             # TO-DO
             pass
 
