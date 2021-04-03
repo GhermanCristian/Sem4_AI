@@ -29,7 +29,7 @@ class SensorList:
 
     def __computeDistancesBetweenSensors(self):
         for i in range(len(self.__sensorList)):
-            self.__distancesBetweenSensors[i][i] = Constants.INFINITY
+            self.__distancesBetweenSensors[i][i] = 0
             firstX, firstY = self.__sensorList[i].getX(), self.__sensorList[i].getY()
             for j in range(i + 1, len(self.__sensorList)):
                 distance = BFS(self.__mapSurface, firstX, firstY, self.__sensorList[j].getX(), self.__sensorList[j].getY()).start()
