@@ -37,3 +37,6 @@ class SensorList:
 
     def getSensorList(self):
         return self.__sensorList
+
+    def getDistanceBetweenSensors(self):
+        return self.__distancesBetweenSensors
