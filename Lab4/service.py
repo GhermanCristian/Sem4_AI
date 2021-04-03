@@ -2,6 +2,7 @@ from domain.drone import Drone
 from domain.map import Map
 from constants import Constants
 import random
+import numpy as np
 
 from domain.sensor import Sensor
 
@@ -15,6 +16,8 @@ class Service:
         self.__sensorList = []
         self.__placeSensors()
         self.__placeDroneOnEmptyPosition()
+        self.__distancesBetweenSensors = np.zeros((Constants.SENSOR_COUNT, Constants.SENSOR_COUNT))
+        self.__computeDistancesBetweenSensors()
 
         for sensor in self.__sensorList:
             sensor.computeAccessiblePositions(self.__mapSurface)
@@ -35,6 +38,13 @@ class Service:
                 crtX, crtY = random.randint(0, Constants.MAP_HEIGHT - 1), random.randint(0, Constants.MAP_WIDTH - 1)
             self.__map.setValueOnPosition(crtX, crtY, Constants.SENSOR_POSITION)
             self.__sensorList.append(Sensor(crtX, crtY))
+
+    def __computeDistancesBetweenSensors(self):
+        for i in range(len(self.__sensorList)):
+            self.__distancesBetweenSensors[i][i] = Constants.INFINITY
+            for j in range(i + 1, len(self.__sensorList)):
+                distance = 0  # compute dfs
+                self.__distancesBetweenSensors[i][j] = self.__distancesBetweenSensors[j][i] = distance
 
     def getMapSurface(self):
         return self.__map.getMapSurface()
