@@ -17,6 +17,7 @@ class SensorList:
 
         for sensor in self.__sensorList:
             sensor.computeAccessiblePositions(self.__mapSurface)
+            sensor.computeMaxEnergyLevel()
 
     def __placeSensors(self):
         self.__sensorList.clear()  # just in case this function is called multiple times
