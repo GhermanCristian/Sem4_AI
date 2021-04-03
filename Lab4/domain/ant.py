@@ -7,6 +7,7 @@ class Ant:
         self.__size = Constants.SENSOR_COUNT  # size of the path through all the sensors
         self.__path = []  # will store the sensor indices
         self.__path.append(random.randint(0, Constants.SENSOR_COUNT - 1))  # place it randomly on a sensor
+        self.__fitness = 0  # is computed only after moving on the path
 
     def __getPossibleMoves(self):
         possibleMoves = []
@@ -52,11 +53,14 @@ class Ant:
         else:
             self.__path.append(self.__rouletteSelection(nextSensorProbability))
 
-    def fitness(self, distanceTable, maxPossiblePathDistance):
+    def computeFitness(self, distanceTable, maxPossiblePathDistance):
         distance = 0
         for i in range(1, len(self.__path)):
             distance += distanceTable[self.__path[i - 1]][self.__path[i]]
-        return maxPossiblePathDistance - distance
+        self.__fitness = maxPossiblePathDistance - distance
+
+    def getFitness(self):
+        return self.__fitness
 
     def getPath(self):
         return self.__path

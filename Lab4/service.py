@@ -33,6 +33,7 @@ class Service:
         for ant in ants:
             for step in range(Constants.SENSOR_COUNT - 1):
                 ant.nextMove(self.__distanceTable, self.__pheromoneTable, q0, alpha, beta)
+            ant.computeFitness(self.__distanceTable, maxPossiblePathDistance)
 
         # simulate pheromone evaporation
         for i in range(Constants.SENSOR_COUNT):
@@ -40,7 +41,7 @@ class Service:
                 self.__pheromoneTable[i][j] = (1 - rho) * self.__pheromoneTable[i][j]
 
         # add the pheromones produced by the last batch of ants
-        newPheromones = [1.0 / ant.fitness(self.__distanceTable, maxPossiblePathDistance) for ant in ants]  # check if the order is ok
+        newPheromones = [1.0 / ant.getFitness() for ant in ants]  # check if the order is ok
         for i in range(Constants.SENSOR_COUNT):
             currentPath = ants[i].getPath()
             for j in range(len(currentPath) - 1):
@@ -51,22 +52,10 @@ class Service:
         bestAnt = None
         bestFitness = 0
         for ant in ants:
-            antFitness = ant.fitness(self.__distanceTable, maxPossiblePathDistance)
-            if bestFitness < antFitness:
-                bestFitness = antFitness
+            if bestFitness < ant.getFitness():
+                bestFitness = ant.getFitness()
                 bestAnt = ant
-        return bestAnt.getPath()
-
-    def __computePathLength(self, path):
-        if not path:
-            return Constants.INFINITY
-
-        length = 0
-        for i in range(len(path) - 1):
-            crtSensor = path[i]
-            nextSensor = path[i + 1]
-            length += self.__distanceTable[crtSensor][nextSensor]
-        return length
+        return bestAnt
 
     def __chargeSensors(self, remainingBattery):
         sensors = self.__sensorList.getSensorList()
@@ -85,17 +74,17 @@ class Service:
         return energyLevels
 
     def run(self):
-        bestSolution = []  # the one with the lowest cost path
+        bestSolution = None  # will be the one with the lowest cost path
 
         print("Starting")
         for epoch in range(Constants.EPOCH_COUNT):
             currentSolution = self.__simulateEpoch(Constants.ANT_COUNT, Constants.ALPHA, Constants.BETA, Constants.Q0, Constants.RHO)
-            if self.__computePathLength(currentSolution) < self.__computePathLength(bestSolution):
-                bestSolution = currentSolution.copy()
+            if bestSolution is None or currentSolution.getFitness() < bestSolution.getFitness():
+                bestSolution = currentSolution
 
-        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - self.__computePathLength(bestSolution))
-        print("Best path length = ", self.__computePathLength(bestSolution))
-        print("Best path = ", bestSolution)
+        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - bestSolution.getFitness())
+        print("Best battery economy = ", bestSolution.getFitness())
+        print("Best path = ", bestSolution.getPath())
         print("Energy = ", energyLevels)
 
     def getMapSurface(self):
