@@ -42,5 +42,11 @@ class Ant:
             # TO-DO
             pass
 
-    def fitness(self):
-        return self.__size
+    def fitness(self, distanceTable, maxPossiblePathDistance):
+        distance = 0
+        for i in range(1, len(self.__path)):
+            distance += distanceTable[self.__path[i - 1]][self.__path[i]]
+        return maxPossiblePathDistance - distance
+
+    def getPath(self):
+        return self.__path
