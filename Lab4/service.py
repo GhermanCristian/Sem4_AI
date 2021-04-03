@@ -1,9 +1,8 @@
+from BFS import BFS
 from domain.drone import Drone
 from domain.map import Map
 from constants import Constants
 import random
-import numpy as np
-
 from domain.sensor import Sensor
 
 
@@ -16,7 +15,7 @@ class Service:
         self.__sensorList = []
         self.__placeSensors()
         self.__placeDroneOnEmptyPosition()
-        self.__distancesBetweenSensors = np.zeros((Constants.SENSOR_COUNT, Constants.SENSOR_COUNT))
+        self.__distancesBetweenSensors = [[0 for i in range(Constants.SENSOR_COUNT)] for j in range(Constants.SENSOR_COUNT)]
         self.__computeDistancesBetweenSensors()
 
         for sensor in self.__sensorList:
@@ -42,8 +41,9 @@ class Service:
     def __computeDistancesBetweenSensors(self):
         for i in range(len(self.__sensorList)):
             self.__distancesBetweenSensors[i][i] = Constants.INFINITY
+            firstX, firstY = self.__sensorList[i].getX(), self.__sensorList[i].getY()
             for j in range(i + 1, len(self.__sensorList)):
-                distance = 0  # compute dfs
+                distance = BFS(self.__mapSurface, firstX, firstY, self.__sensorList[j].getX(), self.__sensorList[j].getY()).start()
                 self.__distancesBetweenSensors[i][j] = self.__distancesBetweenSensors[j][i] = distance
 
     def getMapSurface(self):
