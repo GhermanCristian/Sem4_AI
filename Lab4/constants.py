@@ -33,4 +33,4 @@ class Constants:
     ALPHA = 1.9
     BETA = 0.9
     RHO = 0.05
-    Q0 = 1  # this will have to be changed to sth like 0.5 when implementing the roulette selection
+    Q0 = 0.5

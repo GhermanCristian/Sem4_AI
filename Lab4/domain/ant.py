@@ -27,6 +27,18 @@ class Ant:
 
         return nextSensorProbability
 
+    def __rouletteSelection(self, nextSensorProbability):
+        probabilitySum = sum(nextSensorProbability)
+        partialSums = [nextSensorProbability[0] / probabilitySum]
+        for i in range(1, len(nextSensorProbability)):
+            partialSums.append(partialSums[i - 1] + nextSensorProbability[i] / probabilitySum)
+
+        r = random.random()
+        position = 0
+        while r > partialSums[position]:
+            position += 1
+        return position
+
     def nextMove(self, distanceTable, pheromoneTable, q0, alpha, beta):
         # q0 = probability that the ant chooses the best possible move; otherwise, all moves have a prob of being chosen
         possibleMoves = self.__getPossibleMoves()
@@ -38,9 +50,7 @@ class Ant:
             bestProbability = max(nextSensorProbability)
             self.__path.append(nextSensorProbability.index(bestProbability))
         else:
-            # all moves have a prob of being chosen (roulette)
-            # TO-DO
-            pass
+            self.__path.append(self.__rouletteSelection(nextSensorProbability))
 
     def fitness(self, distanceTable, maxPossiblePathDistance):
         distance = 0
