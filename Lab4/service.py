@@ -68,6 +68,21 @@ class Service:
             length += self.__distanceTable[crtSensor][nextSensor]
         return length
 
+    def __chargeSensors(self, remainingBattery, sensorOrder):
+        sensors = self.__sensorList.getSensorList()
+        energyLevels = [0 for _ in sensors]
+        i = 0
+        while i < len(sensorOrder) and remainingBattery > 0:
+            currentSensorMaxEnergy = sensors[sensorOrder[i]].getMaxEnergyLevel()
+            if remainingBattery > currentSensorMaxEnergy:
+                remainingBattery -= currentSensorMaxEnergy
+                energyLevels[i] = currentSensorMaxEnergy
+            else:  # drain the entire battery
+                energyLevels[i] = remainingBattery
+                remainingBattery = 0
+            i += 1
+        return energyLevels
+
     def run(self):
         bestSolution = []  # the one with the lowest cost path
 
@@ -77,8 +92,10 @@ class Service:
             if self.__computePathLength(currentSolution) < self.__computePathLength(bestSolution):
                 bestSolution = currentSolution.copy()
 
+        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - self.__computePathLength(bestSolution), bestSolution)
         print("Best path length = ", self.__computePathLength(bestSolution))
         print("Best path = ", bestSolution)
+        print("Energy = ", energyLevels)
 
     def getMapSurface(self):
         return self.__map.getMapSurface()
