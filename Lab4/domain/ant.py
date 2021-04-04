@@ -4,38 +4,39 @@ import random
 
 class Ant:
     def __init__(self):
-        self.__size = Constants.SENSOR_COUNT  # size of the path through all the sensors
-        self.__path = []  # will store the sensor indices
-        self.__path.append(random.randint(0, Constants.SENSOR_COUNT - 1))  # place it randomly on a sensor
+        self.__size = Constants.NODE_COUNT
+        # self.__size = 3 * Constants.NODE_COUNT  # to get from one node to another: choose energy level, go to exit, go to next node (3 moves)
+        self.__path = []  # will store the nodes indices
+        self.__path.append(random.randint(0, Constants.NODE_COUNT - 1))  # place it randomly on a node!!! - ensure that we're placing on a node not on an energy level
         self.__fitness = 0  # is computed only after moving on the path
         self.__battery = Constants.DRONE_BATTERY
 
     def __getPossibleMoves(self, distanceTable):
         possibleMoves = []
-        currentSensorIndex = self.__path[-1]
+        currentNodeIndex = self.__path[-1]
 
-        for nextSensorIndex in range(Constants.SENSOR_COUNT):
-            if nextSensorIndex not in self.__path and self.__battery >= distanceTable[currentSensorIndex][nextSensorIndex]:
-                possibleMoves.append(nextSensorIndex)
+        for nextNodeIndex in range(Constants.NODE_COUNT):
+            if nextNodeIndex not in self.__path and self.__battery >= distanceTable[currentNodeIndex][nextNodeIndex]:
+                possibleMoves.append(nextNodeIndex)
         return possibleMoves
 
-    def __computeProbabilityOfChoosingNextSensor(self, possibleMoves, alpha, beta, distanceTable, pheromoneTable):
-        currentSensorIndex = self.__path[-1]
-        nextSensorProbability = [0 for i in range(self.__size)]
+    def __computeProbabilityOfChoosingNextNode(self, possibleMoves, alpha, beta, distanceTable, pheromoneTable):
+        currentNodeIndex = self.__path[-1]
+        nextNodeProbability = [0 for i in range(self.__size)]
 
         for moveIndex in possibleMoves:
-            distanceToNextSensor = distanceTable[currentSensorIndex][moveIndex]
-            pheromoneToNextSensor = pheromoneTable[currentSensorIndex][moveIndex]
-            probability = (distanceToNextSensor ** beta) * (pheromoneToNextSensor ** alpha)
-            nextSensorProbability[moveIndex] = probability
+            distanceToNextNode = distanceTable[currentNodeIndex][moveIndex]
+            pheromoneToNextNode = pheromoneTable[currentNodeIndex][moveIndex]
+            probability = (distanceToNextNode ** beta) * (pheromoneToNextNode ** alpha)
+            nextNodeProbability[moveIndex] = probability
 
-        return nextSensorProbability
+        return nextNodeProbability
 
-    def __rouletteSelection(self, nextSensorProbability):
-        probabilitySum = sum(nextSensorProbability)
-        partialSums = [nextSensorProbability[0] / probabilitySum]
-        for i in range(1, len(nextSensorProbability)):
-            partialSums.append(partialSums[i - 1] + nextSensorProbability[i] / probabilitySum)
+    def __rouletteSelection(self, nextNodeProbability):
+        probabilitySum = sum(nextNodeProbability)
+        partialSums = [nextNodeProbability[0] / probabilitySum]
+        for i in range(1, len(nextNodeProbability)):
+            partialSums.append(partialSums[i - 1] + nextNodeProbability[i] / probabilitySum)
 
         r = random.random()
         position = 0
@@ -49,14 +50,14 @@ class Ant:
         if not possibleMoves:
             return False  # the move wasn't completed successfully
 
-        nextSensorProbability = self.__computeProbabilityOfChoosingNextSensor(possibleMoves, alpha, beta, distanceTable, pheromoneTable)
+        nextNodeProbability = self.__computeProbabilityOfChoosingNextNode(possibleMoves, alpha, beta, distanceTable, pheromoneTable)
         if random.random() < q0:
-            bestProbability = max(nextSensorProbability)
-            selectedSensor = nextSensorProbability.index(bestProbability)
+            bestProbability = max(nextNodeProbability)
+            selectedNode = nextNodeProbability.index(bestProbability)
         else:
-            selectedSensor = self.__rouletteSelection(nextSensorProbability)
-        self.__battery -= distanceTable[self.__path[-1]][selectedSensor]
-        self.__path.append(selectedSensor)
+            selectedNode = self.__rouletteSelection(nextNodeProbability)
+        self.__battery -= distanceTable[self.__path[-1]][selectedNode]
+        self.__path.append(selectedNode)
 
         return True  # the move was completed successfully
 
