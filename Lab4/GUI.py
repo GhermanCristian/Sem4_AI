@@ -1,7 +1,6 @@
 import pygame
 from constants import Constants
 from pygame.constants import KEYDOWN
-from service import Service
 
 
 class GUI:
@@ -59,7 +58,10 @@ class GUI:
         print ("Starting")
 
         bestSolution = self.__service.run()
+        if bestSolution is None:  # this can happen (battery is not enough even for the traversal of the sensors, let alone charging them)
+            print ("No solution could be found")
+            return
 
         print("Largest number of visible positions = ", bestSolution.getVisiblePositions())
         print("Battery left = ", bestSolution.getBattery())
-        print("Path - energy pairs = ", Service.getSolutionFromPath(bestSolution.getPath()))
+        print("Sensor - energy pairs = ", self.__service.getSolutionFromPath(bestSolution.getPath()))

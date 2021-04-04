@@ -85,21 +85,18 @@ class Service:
             return currentSolution  # new best solution
         return bestSolution
 
-    @staticmethod
-    def getSolutionFromPath(path):
+    def getSolutionFromPath(self, path):
         # path is of the form: entry node, energy node, exit node...
         sensorEnergyPairs = []
         for i in range(0, len(path), 3):
-            sensorEnergyPairs.append((path[i] // Constants.NODES_PER_SENSOR, path[i + 1] - path[i] - 1))
+            sensor = self.__nodeList.getNodeList()[path[i]]
+            sensorEnergyPairs.append(((sensor.getX(), sensor.getY()), path[i + 1] - path[i] - 1))
         return sensorEnergyPairs
 
     def run(self):
-        bestSolution = None  # will be the one with the lowest cost path
+        bestSolution = None  # will be the one with the largest number of visible positions
         for epoch in range(Constants.EPOCH_COUNT):
             bestSolution = self.__updateBestSolution(bestSolution)
-
-        if bestSolution is None:  # this can happen, especially if EPOCH_COUNT is too small
-            return None
         return bestSolution
 
     def getMapSurface(self):
