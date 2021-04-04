@@ -37,7 +37,7 @@ class Service:
         aliveAnts = []  # only return the ants which completed the path
         for i in range(len(ants)):
             if isAntAlive[i]:
-                ants[i].computeFitness(self.__distanceTable)  # no use computing the fitness of dead ants
+                ants[i].computeFitness(self.__mapSurface, self.__nodeList.getNodeList())  # no use computing the fitness of dead ants
                 aliveAnts.append(ants[i])
         return aliveAnts
 
@@ -82,7 +82,7 @@ class Service:
 
         currentSolutionPathLength = len(currentSolution.getPath())
         if bestSolution is None or currentSolutionPathLength > len(bestSolution.getPath()) or (currentSolutionPathLength == len(bestSolution.getPath()) and currentSolution.getFitness() < bestSolution.getFitness()):
-            print ("new best = ", currentSolution.getFitness(), currentSolution)
+            print ("new best = ", currentSolution.getVisiblePositions(), currentSolution.getBattery(), currentSolution.getPath())
             return currentSolution  # new best solution
         return bestSolution
 
@@ -105,7 +105,8 @@ class Service:
             print ("No solution could be found")
             return
 
-        print("Best battery economy = ", bestSolution.getFitness())
+        print("Largest number of visible positions = ", bestSolution.getVisiblePositions())
+        print("Battery left = ", bestSolution.getBattery())
         print("Path - energy pairs = ", self.__getSolutionFromPath(bestSolution.getPath()))
 
     def getMapSurface(self):

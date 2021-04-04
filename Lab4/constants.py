@@ -24,6 +24,7 @@ class Constants:
     WALL_POSITION = 1
     ACCESSIBLE_POSITION = 2
     SENSOR_POSITION = 3
+    TOTAL_EMPTY_POSITIONS = 340  # for a map fill = 0.15 out of 400 tiles =>~ 0.85 * 400 = 340
 
     TIME_BETWEEN_MOVES = 50  # in milliseconds
 
