@@ -32,8 +32,8 @@ class Constants:
     SENSOR_COUNT = 8
     INFINITY = 999999999
     EPOCH_COUNT = 1000
-    ANT_COUNT = SENSOR_COUNT * 3
+    ANT_COUNT = SENSOR_COUNT * 4
     ALPHA = 1.9
     BETA = 0.9
-    RHO = 0.05
+    RHO = 0.03
     Q0 = 0.5

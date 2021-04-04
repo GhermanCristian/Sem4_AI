@@ -47,7 +47,7 @@ class Ant:
         # q0 = probability that the ant chooses the best possible move; otherwise, all moves have a prob of being chosen
         possibleMoves = self.__getPossibleMoves(distanceTable)
         if not possibleMoves:
-            return False
+            return False  # the move wasn't completed successfully
 
         nextSensorProbability = self.__computeProbabilityOfChoosingNextSensor(possibleMoves, alpha, beta, distanceTable, pheromoneTable)
         if random.random() < q0:
@@ -58,14 +58,16 @@ class Ant:
         self.__battery -= distanceTable[self.__path[-1]][selectedSensor]
         self.__path.append(selectedSensor)
 
+        return True  # the move was completed successfully
+
     def computePathLength(self, distanceTable):
         length = 0
         for i in range(1, len(self.__path)):
             length += distanceTable[self.__path[i - 1]][self.__path[i]]
         return length
 
-    def computeFitness(self, distanceTable, maxPossiblePathDistance):
-        self.__fitness = maxPossiblePathDistance - self.computePathLength(distanceTable)
+    def computeFitness(self, distanceTable):
+        self.__fitness = self.computePathLength(distanceTable)
 
     def getFitness(self):
         return self.__fitness
