@@ -57,10 +57,17 @@ class Service:
                 bestAnt = ant
         return bestAnt
 
-    def __chargeSensors(self, remainingBattery):
-        sensors = self.__sensorList.getSensorList()
-        sensors.sort(reverse=False, key=lambda s: (s.getAccessiblePositions()[-1] / s.getMaxEnergyLevel()))
+    def __chargeSensors(self, remainingBattery, accessibleSensors):
+        sensors = []  # only charge the sensors that have been reached by the drone
+        for i in range(len(self.__sensorList.getSensorList())):
+            if i in accessibleSensors:
+                sensors.append(self.__sensorList.getSensorList()[i])
+
         energyLevels = [0 for _ in sensors]
+        if remainingBattery <= 0:
+            return energyLevels
+
+        sensors.sort(reverse=False, key=lambda s: (s.getAccessiblePositions()[-1] / s.getMaxEnergyLevel()))
         i = 0
         while i < len(sensors) and remainingBattery > 0:
             currentSensorMaxEnergy = sensors[i].getMaxEnergyLevel()
@@ -79,11 +86,12 @@ class Service:
         print("Starting")
         for epoch in range(Constants.EPOCH_COUNT):
             currentSolution = self.__simulateEpoch(Constants.ANT_COUNT, Constants.ALPHA, Constants.BETA, Constants.Q0, Constants.RHO)
-            if bestSolution is None or currentSolution.getFitness() < bestSolution.getFitness():
+            currentSolutionPathLength = len(currentSolution.getPath())
+            if bestSolution is None or currentSolutionPathLength > len(bestSolution.getPath()) or (currentSolutionPathLength == len(bestSolution.getPath()) and currentSolution.getFitness() < bestSolution.getFitness()):
                 bestSolution = currentSolution
 
-        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - bestSolution.getFitness())
-        print("Best battery economy = ", bestSolution.getFitness())
+        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - bestSolution.computePathLength(self.__distanceTable), bestSolution.getPath())
+        print("Best battery economy = ", bestSolution.computePathLength(self.__distanceTable))
         print("Best path = ", bestSolution.getPath())
         print("Energy = ", energyLevels)
 

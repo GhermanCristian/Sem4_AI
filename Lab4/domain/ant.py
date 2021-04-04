@@ -8,12 +8,15 @@ class Ant:
         self.__path = []  # will store the sensor indices
         self.__path.append(random.randint(0, Constants.SENSOR_COUNT - 1))  # place it randomly on a sensor
         self.__fitness = 0  # is computed only after moving on the path
+        self.__battery = Constants.DRONE_BATTERY
 
-    def __getPossibleMoves(self):
+    def __getPossibleMoves(self, distanceTable):
         possibleMoves = []
-        for sensorIndex in range(Constants.SENSOR_COUNT):
-            if sensorIndex not in self.__path:
-                possibleMoves.append(sensorIndex)
+        currentSensorIndex = self.__path[-1]
+
+        for nextSensorIndex in range(Constants.SENSOR_COUNT):
+            if nextSensorIndex not in self.__path and self.__battery >= distanceTable[currentSensorIndex][nextSensorIndex]:
+                possibleMoves.append(nextSensorIndex)
         return possibleMoves
 
     def __computeProbabilityOfChoosingNextSensor(self, possibleMoves, alpha, beta, distanceTable, pheromoneTable):
@@ -42,22 +45,27 @@ class Ant:
 
     def nextMove(self, distanceTable, pheromoneTable, q0, alpha, beta):
         # q0 = probability that the ant chooses the best possible move; otherwise, all moves have a prob of being chosen
-        possibleMoves = self.__getPossibleMoves()
+        possibleMoves = self.__getPossibleMoves(distanceTable)
         if not possibleMoves:
             return False
 
         nextSensorProbability = self.__computeProbabilityOfChoosingNextSensor(possibleMoves, alpha, beta, distanceTable, pheromoneTable)
         if random.random() < q0:
             bestProbability = max(nextSensorProbability)
-            self.__path.append(nextSensorProbability.index(bestProbability))
+            selectedSensor = nextSensorProbability.index(bestProbability)
         else:
-            self.__path.append(self.__rouletteSelection(nextSensorProbability))
+            selectedSensor = self.__rouletteSelection(nextSensorProbability)
+        self.__battery -= distanceTable[self.__path[-1]][selectedSensor]
+        self.__path.append(selectedSensor)
+
+    def computePathLength(self, distanceTable):
+        length = 0
+        for i in range(1, len(self.__path)):
+            length += distanceTable[self.__path[i - 1]][self.__path[i]]
+        return length
 
     def computeFitness(self, distanceTable, maxPossiblePathDistance):
-        distance = 0
-        for i in range(1, len(self.__path)):
-            distance += distanceTable[self.__path[i - 1]][self.__path[i]]
-        self.__fitness = maxPossiblePathDistance - distance
+        self.__fitness = maxPossiblePathDistance - self.computePathLength(distanceTable)
 
     def getFitness(self):
         return self.__fitness
