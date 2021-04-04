@@ -4,8 +4,7 @@ import random
 
 class Ant:
     def __init__(self):
-        self.__size = Constants.NODE_COUNT
-        # self.__size = 3 * Constants.NODE_COUNT  # to get from one node to another: choose energy level, go to exit, go to next node (3 moves)
+        self.__size = Constants.MOVE_COUNT
         self.__path = []  # will store the nodes indices
         self.__path.append(random.randint(0, Constants.NODE_COUNT - 1))  # place it randomly on a node!!! - ensure that we're placing on a node not on an energy level
         self.__fitness = 0  # is computed only after moving on the path

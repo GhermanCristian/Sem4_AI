@@ -33,6 +33,8 @@ class Constants:
     INFINITY = 999999999
     EPOCH_COUNT = 1000
     NODE_COUNT = SENSOR_COUNT
+    MOVE_COUNT = NODE_COUNT
+    #MOVE_COUNT = 3 * NODE_COUNT  # to get from one node to another: choose energy level, go to exit, go to next node (3 moves)
     #NODE_COUNT = SENSOR_COUNT * (2 + ENERGY_LEVELS)  # each sensor has an entry and exit node + energy leves
     ANT_COUNT = SENSOR_COUNT * 4
     ALPHA = 1.9
