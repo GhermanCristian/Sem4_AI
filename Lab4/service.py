@@ -102,6 +102,9 @@ class Service:
     def getMapSurface(self):
         return self.__map.getMapSurface()
 
+    def getNodeList(self):
+        return self.__nodeList.getNodeList()
+
     def getDroneXCoord(self):
         return self.__drone.getX()
 

@@ -134,6 +134,7 @@ class Ant:
             self.__fitness += res
 
         self.__fitness = Constants.TOTAL_EMPTY_POSITIONS - self.__fitness  # fitness is inverse proportional with the no. of visible tiles
+        return mapCopy
 
     def getFitness(self):
         return self.__fitness
