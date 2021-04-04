@@ -87,7 +87,7 @@ class Ant:
         # path is of the form: entry node, energy node, exit node...
         sensorEnergyPairs = []
         for i in range(0, len(self.__path), 3):
-            sensorEnergyPairs.append((self.__path[i] // Constants.NODES_PER_SENSOR, self.__path[i + 1] - self.__path[i] - 1))
+            sensorEnergyPairs.append((self.__path[i], self.__path[i + 1] - self.__path[i] - 1))
         return sensorEnergyPairs
 
     def __checkEmptyAndUpdateAccessibleCount(self, crtCoords, temporaryMatrix):
@@ -104,38 +104,41 @@ class Ant:
         while energyCopy > 0 and newX >= 0 and temporaryMatrix[newX][crtCoords[1]] != Constants.WALL_POSITION:
             newAccessible += self.__checkEmptyAndUpdateAccessibleCount((newX, crtCoords[1]), temporaryMatrix)
             newX -= 1
-            energy -= 1
+            energyCopy -= 1
 
         newY = crtCoords[1] + 1  # RIGHT
         energyCopy = energy
         while energyCopy > 0 and newY < Constants.MAP_WIDTH and temporaryMatrix[crtCoords[0]][newY] != Constants.WALL_POSITION:
             newAccessible += self.__checkEmptyAndUpdateAccessibleCount((crtCoords[0], newY), temporaryMatrix)
             newY += 1
-            energy -= 1
+            energyCopy -= 1
 
         newX = crtCoords[0] + 1  # DOWN
         energyCopy = energy
         while energyCopy > 0 and newX < Constants.MAP_HEIGHT and temporaryMatrix[newX][crtCoords[1]] != Constants.WALL_POSITION:
             newAccessible += self.__checkEmptyAndUpdateAccessibleCount((newX, crtCoords[1]), temporaryMatrix)
             newX += 1
-            energy -= 1
+            energyCopy -= 1
 
         newY = crtCoords[1] - 1  # LEFT
         energyCopy = energy
         while energyCopy > 0 and newY >= 0 and temporaryMatrix[crtCoords[0]][newY] != Constants.WALL_POSITION:
             newAccessible += self.__checkEmptyAndUpdateAccessibleCount((crtCoords[0], newY), temporaryMatrix)
             newY -= 1
-            energy -= 1
+            energyCopy -= 1
 
         return newAccessible
 
     def computeFitness(self, mapSurface, nodeList):
         mapCopy = mapSurface.copy()
         sensorEnergyPairs = self.__computeSensorEnergyPairs()
+        self.__fitness = 0
         for pair in sensorEnergyPairs:
             sensorIndex, energy = pair
             sensor = nodeList[sensorIndex]
-            self.__fitness += self.__markAndCountNewAccessible(mapCopy, (sensor.getX(), sensor.getY()), energy)
+            res = self.__markAndCountNewAccessible(mapCopy, (sensor.getX(), sensor.getY()), energy)
+            self.__fitness += res
+
         self.__fitness = Constants.TOTAL_EMPTY_POSITIONS - self.__fitness  # fitness is inverse proportional with the no. of visible tiles
 
     def getFitness(self):
