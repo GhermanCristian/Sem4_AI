@@ -31,12 +31,11 @@ class Constants:
     DRONE_BATTERY = 100
     SENSOR_COUNT = 8
     INFINITY = 999999999
-    EPOCH_COUNT = 1000
-    NODE_COUNT = SENSOR_COUNT
-    MOVE_COUNT = NODE_COUNT
-    #MOVE_COUNT = 3 * NODE_COUNT  # to get from one node to another: choose energy level, go to exit, go to next node (3 moves)
-    #NODE_COUNT = SENSOR_COUNT * (2 + ENERGY_LEVELS)  # each sensor has an entry and exit node + energy leves
-    ANT_COUNT = SENSOR_COUNT * 4
+    EPOCH_COUNT = 100
+    NODES_PER_SENSOR = 2 + ENERGY_LEVELS  # each sensor has an entry and exit node + energy level
+    NODE_COUNT = SENSOR_COUNT * NODES_PER_SENSOR
+    MOVE_COUNT = 3 * SENSOR_COUNT  # to get from one sensor to another: choose energy level, go to exit, go to next node (3 moves)
+    ANT_COUNT = NODE_COUNT * 32
     ALPHA = 1.9
     BETA = 0.9
     RHO = 0.03
