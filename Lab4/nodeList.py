@@ -12,13 +12,13 @@ class NodeList:
         self.__mapSurface = m.getMapSurface()
         self.__placeNodes()  #
 
-        self.__distancesBetweenNodes = [[Constants.INFINITY for _ in range(Constants.NODE_COUNT)] for _ in range(Constants.NODE_COUNT)]
-        self.__computeDistancesBetweenNodes()
-
         for node in self.__nodeList:
             if isinstance(node, Sensor):
                 node.computeAccessiblePositions(self.__mapSurface)
                 node.computeMaxEnergyLevel()
+
+        self.__distancesBetweenNodes = [[Constants.INFINITY for _ in range(Constants.NODE_COUNT)] for _ in range(Constants.NODE_COUNT)]
+        self.__computeDistancesBetweenNodes()
 
     def __placeExtraNodesForASensor(self, crtX, crtY):
         for _ in range(Constants.ENERGY_LEVELS + 1):  # the energy levels + the exit node
@@ -60,9 +60,15 @@ class NodeList:
         for i in range(len(self.__nodeList)):
             self.__distancesBetweenNodes[i][i] = 0  # this applies to all nodes regardless of type
 
-            if self.__isEntryNode(i):
+            if self.__isEntryNode(i):  # entry node = sensor
+                sensor = self.__nodeList[i]
                 for energy in range(Constants.ENERGY_LEVELS):
-                    self.__distancesBetweenNodes[i][i + energy + 1] = energy
+                    # each sensor has a max 'non-wasteful' energy level (everything above that is wasteful)
+                    # so we block the paths which try to access those energy levels
+                    if energy <= sensor.getMaxEnergyLevel():
+                        self.__distancesBetweenNodes[i][i + energy + 1] = energy
+                    else:
+                        self.__distancesBetweenNodes[i][i + energy + 1] = Constants.INFINITY
 
             elif self.__isExitNode(i):
                 # distance between sensors i, j = dist(i.exit, j.entry) = dist(j.exit, i.entry)
