@@ -24,6 +24,7 @@ class Constants:
     WALL_POSITION = 1
     ACCESSIBLE_POSITION = 2
     SENSOR_POSITION = 3
+    TOTAL_EMPTY_POSITIONS = 340  # for a map fill = 0.15 out of 400 tiles =>~ 0.85 * 400 = 340
 
     TIME_BETWEEN_MOVES = 50  # in milliseconds
 
@@ -31,9 +32,12 @@ class Constants:
     DRONE_BATTERY = 100
     SENSOR_COUNT = 8
     INFINITY = 999999999
-    EPOCH_COUNT = 1000
-    ANT_COUNT = SENSOR_COUNT * 3
+    EPOCH_COUNT = 100
+    NODES_PER_SENSOR = 2 + ENERGY_LEVELS  # each sensor has an entry and exit node + energy level
+    NODE_COUNT = SENSOR_COUNT * NODES_PER_SENSOR
+    MOVE_COUNT = 3 * SENSOR_COUNT  # to get from one sensor to another: choose energy level, go to exit, go to next node (3 moves)
+    ANT_COUNT = NODE_COUNT * 32
     ALPHA = 1.9
     BETA = 0.9
-    RHO = 0.05
+    RHO = 0.01
     Q0 = 0.5

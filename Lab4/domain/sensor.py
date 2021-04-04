@@ -1,11 +1,11 @@
 from constants import Constants
+from domain.node import Node
 
 
-class Sensor:
+class Sensor(Node):
     def __init__(self, xCoord, yCoord):
-        self.__xCoord = xCoord  # the coords are valid
-        self.__yCoord = yCoord
-        self.__accessiblePositions = [0 for i in range(Constants.ENERGY_LEVELS)]  # for each energy 0 -> 5
+        super().__init__(xCoord, yCoord)
+        self.__accessiblePositions = [0 for _ in range(Constants.ENERGY_LEVELS)]  # for each energy 0 -> 5
         self.__maxEnergyLevel = 0
 
     def __isValid(self, x, y, mapSurface):
@@ -15,13 +15,13 @@ class Sensor:
     def computeAccessiblePositions(self, mapSurface):
         # this should be called after all the sensors have been placed
         directions = Constants.DIRECTIONS
-        blockedDirection = [False for i in range(len(directions))]
+        blockedDirection = [False for _ in range(len(directions))]
         for energy in range(1, Constants.ENERGY_LEVELS):
             self.__accessiblePositions[energy] = self.__accessiblePositions[energy - 1]  # just in case we call this function multiple times
             for i in range(len(directions)):
                 if not blockedDirection[i]:
                     direction = directions[i]
-                    if self.__isValid(self.__xCoord + direction[0] * energy, self.__yCoord + direction[1] * energy, mapSurface):
+                    if self.__isValid(self._xCoord + direction[0] * energy, self._yCoord + direction[1] * energy, mapSurface):
                         self.__accessiblePositions[energy] += 1
                     else:
                         blockedDirection[i] = True
@@ -40,9 +40,3 @@ class Sensor:
 
     def getAccessiblePositions(self):
         return self.__accessiblePositions
-
-    def getX(self):
-        return self.__xCoord
-
-    def getY(self):
-        return self.__yCoord

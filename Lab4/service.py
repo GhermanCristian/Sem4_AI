@@ -3,7 +3,7 @@ from domain.drone import Drone
 from domain.map import Map
 from constants import Constants
 import random
-from sensorList import SensorList
+from nodeList import NodeList
 
 
 class Service:
@@ -12,10 +12,10 @@ class Service:
         self.__map.loadMap("test1.map")
         self.__mapSurface = self.__map.getMapSurface()
         self.__drone = Drone(5, 5)
-        self.__sensorList = SensorList(self.__map)
+        self.__nodeList = NodeList(self.__map)
         self.__placeDroneOnEmptyPosition()
-        self.__pheromoneTable = [[1.0 for i in range(Constants.SENSOR_COUNT)] for j in range(Constants.SENSOR_COUNT)]
-        self.__distanceTable = self.__sensorList.getDistanceBetweenSensors()
+        self.__pheromoneTable = [[1.0 for _ in range(Constants.NODE_COUNT)] for _ in range(Constants.NODE_COUNT)]
+        self.__distanceTable = self.__nodeList.getDistanceBetweenNodes()
 
     def __placeDroneOnEmptyPosition(self):
         crtX, crtY = self.__drone.getX(), self.__drone.getY()
@@ -24,31 +24,24 @@ class Service:
         self.__drone.setX(crtX)
         self.__drone.setY(crtY)
 
-    def __simulateEpoch(self, antCount, alpha, beta, q0, rho):
-        ants = [Ant() for i in range(antCount)]  # normally the antCount <= sensor count
-        maxPossiblePathDistance = self.__sensorList.getMaxPossibleDistance()
-        # we need it in the fitness function, because the path length is inverse proportional with good fitness
+    def __moveAnts(self, ants, alpha, beta, q0):
+        isAntAlive = [True for _ in ants]
+        for i in range(len(ants)):
+            ant = ants[i]
+            for step in range(Constants.MOVE_COUNT - 1):  # subtract 1 because we init the ant by placing it on a node, so 1 node is already taken?
+                successfulMoveCompletion = ant.nextMove(self.__distanceTable, self.__pheromoneTable, q0, alpha, beta)
+                if not successfulMoveCompletion:
+                    isAntAlive[i] = False
+                    break  # no use in trying to move the ant if it has no battery left / is dead
 
-        # move the ants
-        for ant in ants:
-            for step in range(Constants.SENSOR_COUNT - 1):
-                ant.nextMove(self.__distanceTable, self.__pheromoneTable, q0, alpha, beta)
-            ant.computeFitness(self.__distanceTable, maxPossiblePathDistance)
+        aliveAnts = []  # only return the ants which completed the path
+        for i in range(len(ants)):
+            if isAntAlive[i]:
+                ants[i].computeFitness(self.__mapSurface, self.__nodeList.getNodeList())  # no use computing the fitness of dead ants
+                aliveAnts.append(ants[i])
+        return aliveAnts
 
-        # simulate pheromone evaporation
-        for i in range(Constants.SENSOR_COUNT):
-            for j in range(Constants.SENSOR_COUNT):
-                self.__pheromoneTable[i][j] = (1 - rho) * self.__pheromoneTable[i][j]
-
-        # add the pheromones produced by the last batch of ants
-        newPheromones = [1.0 / ant.getFitness() for ant in ants]  # check if the order is ok
-        for i in range(Constants.SENSOR_COUNT):
-            currentPath = ants[i].getPath()
-            for j in range(len(currentPath) - 1):
-                crtSensor = currentPath[j]
-                nextSensor = currentPath[j + 1]
-                self.__pheromoneTable[crtSensor][nextSensor] += newPheromones[i]
-
+    def __selectBestAnt(self, ants):
         bestAnt = None
         bestFitness = 0
         for ant in ants:
@@ -57,35 +50,54 @@ class Service:
                 bestAnt = ant
         return bestAnt
 
-    def __chargeSensors(self, remainingBattery):
-        sensors = self.__sensorList.getSensorList()
-        sensors.sort(reverse=False, key=lambda s: (s.getAccessiblePositions()[-1] / s.getMaxEnergyLevel()))
-        energyLevels = [0 for _ in sensors]
-        i = 0
-        while i < len(sensors) and remainingBattery > 0:
-            currentSensorMaxEnergy = sensors[i].getMaxEnergyLevel()
-            if remainingBattery > currentSensorMaxEnergy:
-                remainingBattery -= currentSensorMaxEnergy
-                energyLevels[i] = currentSensorMaxEnergy
-            else:  # drain the entire battery
-                energyLevels[i] = remainingBattery
-                remainingBattery = 0
-            i += 1
-        return energyLevels
+    def __simulateEpoch(self, antCount, alpha, beta, q0, rho):
+        ants = [Ant() for _ in range(antCount)]
+
+        # move the ants; remove those which don't reach the end
+        ants = self.__moveAnts(ants, alpha, beta, q0)
+
+        # simulate pheromone evaporation; it has to be done even if all ants die
+        for i in range(Constants.NODE_COUNT):
+            for j in range(Constants.NODE_COUNT):
+                self.__pheromoneTable[i][j] = (1 - rho) * self.__pheromoneTable[i][j]
+
+        if not ants:
+            return None
+
+        # add the pheromones produced by the last batch of ants
+        newPheromones = [1.0 / ant.getFitness() for ant in ants]  # TO-DO: check if the order is the same as for range(len(..))
+        for i in range(len(ants)):
+            currentPath = ants[i].getPath()
+            for j in range(len(currentPath) - 1):
+                crtNode = currentPath[j]
+                nextNode = currentPath[j + 1]
+                self.__pheromoneTable[crtNode][nextNode] += newPheromones[i]
+
+        return self.__selectBestAnt(ants)
+
+    def __updateBestSolution(self, bestSolution):
+        currentSolution = self.__simulateEpoch(Constants.ANT_COUNT, Constants.ALPHA, Constants.BETA, Constants.Q0, Constants.RHO)
+        if currentSolution is None:
+            return bestSolution
+
+        currentSolutionPathLength = len(currentSolution.getPath())
+        if bestSolution is None or currentSolutionPathLength > len(bestSolution.getPath()) or (currentSolutionPathLength == len(bestSolution.getPath()) and currentSolution.getFitness() < bestSolution.getFitness()):
+            return currentSolution  # new best solution
+        return bestSolution
+
+    def getSolutionFromPath(self, path):
+        # path is of the form: entry node, energy node, exit node...
+        sensorEnergyPairs = []
+        for i in range(0, len(path), 3):
+            sensor = self.__nodeList.getNodeList()[path[i]]
+            sensorEnergyPairs.append(((sensor.getX(), sensor.getY()), path[i + 1] - path[i] - 1))
+        return sensorEnergyPairs
 
     def run(self):
-        bestSolution = None  # will be the one with the lowest cost path
-
-        print("Starting")
+        bestSolution = None  # will be the one with the largest number of visible positions
         for epoch in range(Constants.EPOCH_COUNT):
-            currentSolution = self.__simulateEpoch(Constants.ANT_COUNT, Constants.ALPHA, Constants.BETA, Constants.Q0, Constants.RHO)
-            if bestSolution is None or currentSolution.getFitness() < bestSolution.getFitness():
-                bestSolution = currentSolution
-
-        energyLevels = self.__chargeSensors(Constants.DRONE_BATTERY - bestSolution.getFitness())
-        print("Best battery economy = ", bestSolution.getFitness())
-        print("Best path = ", bestSolution.getPath())
-        print("Energy = ", energyLevels)
+            bestSolution = self.__updateBestSolution(bestSolution)
+        return bestSolution
 
     def getMapSurface(self):
         return self.__map.getMapSurface()

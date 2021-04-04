@@ -55,4 +55,13 @@ class GUI:
     def start(self):
         self.__displayMap()
         self.__waitForKeyboardInput()
-        self.__service.run()
+        print ("Starting")
+
+        bestSolution = self.__service.run()
+        if bestSolution is None:  # this can happen (battery is not enough even for the traversal of the sensors, let alone charging them)
+            print ("No solution could be found")
+            return
+
+        print("Largest number of visible positions = ", bestSolution.getVisiblePositions())
+        print("Battery left = ", bestSolution.getBattery())
+        print("Sensor - energy pairs = ", self.__service.getSolutionFromPath(bestSolution.getPath()))
