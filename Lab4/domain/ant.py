@@ -77,12 +77,6 @@ class Ant:
 
         return True  # the move was completed successfully
 
-    def computePathLength(self, distanceTable):
-        length = 0
-        for i in range(1, len(self.__path)):
-            length += distanceTable[self.__path[i - 1]][self.__path[i]]
-        return length
-
     def __computeSensorEnergyPairs(self):
         # path is of the form: entry node, energy node, exit node...
         sensorEnergyPairs = []

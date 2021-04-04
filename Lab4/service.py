@@ -82,11 +82,11 @@ class Service:
 
         currentSolutionPathLength = len(currentSolution.getPath())
         if bestSolution is None or currentSolutionPathLength > len(bestSolution.getPath()) or (currentSolutionPathLength == len(bestSolution.getPath()) and currentSolution.getFitness() < bestSolution.getFitness()):
-            print ("new best = ", currentSolution.getVisiblePositions(), currentSolution.getBattery(), currentSolution.getPath())
             return currentSolution  # new best solution
         return bestSolution
 
-    def __getSolutionFromPath(self, path):
+    @staticmethod
+    def getSolutionFromPath(path):
         # path is of the form: entry node, energy node, exit node...
         sensorEnergyPairs = []
         for i in range(0, len(path), 3):
@@ -95,19 +95,12 @@ class Service:
 
     def run(self):
         bestSolution = None  # will be the one with the lowest cost path
-
-        print("Starting")
         for epoch in range(Constants.EPOCH_COUNT):
-            print (epoch)
             bestSolution = self.__updateBestSolution(bestSolution)
 
         if bestSolution is None:  # this can happen, especially if EPOCH_COUNT is too small
-            print ("No solution could be found")
-            return
-
-        print("Largest number of visible positions = ", bestSolution.getVisiblePositions())
-        print("Battery left = ", bestSolution.getBattery())
-        print("Path - energy pairs = ", self.__getSolutionFromPath(bestSolution.getPath()))
+            return None
+        return bestSolution
 
     def getMapSurface(self):
         return self.__map.getMapSurface()

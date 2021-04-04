@@ -1,6 +1,7 @@
 import pygame
 from constants import Constants
 from pygame.constants import KEYDOWN
+from service import Service
 
 
 class GUI:
@@ -55,4 +56,10 @@ class GUI:
     def start(self):
         self.__displayMap()
         self.__waitForKeyboardInput()
-        self.__service.run()
+        print ("Starting")
+
+        bestSolution = self.__service.run()
+
+        print("Largest number of visible positions = ", bestSolution.getVisiblePositions())
+        print("Battery left = ", bestSolution.getBattery())
+        print("Path - energy pairs = ", Service.getSolutionFromPath(bestSolution.getPath()))
