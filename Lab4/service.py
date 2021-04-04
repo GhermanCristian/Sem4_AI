@@ -86,6 +86,13 @@ class Service:
             return currentSolution  # new best solution
         return bestSolution
 
+    def __getSolutionFromPath(self, path):
+        # path is of the form: entry node, energy node, exit node...
+        sensorEnergyPairs = []
+        for i in range(0, len(path), 3):
+            sensorEnergyPairs.append((path[i] // Constants.NODES_PER_SENSOR, path[i + 1] - path[i] - 1))
+        return sensorEnergyPairs
+
     def run(self):
         bestSolution = None  # will be the one with the lowest cost path
 
@@ -94,8 +101,12 @@ class Service:
             print (epoch)
             bestSolution = self.__updateBestSolution(bestSolution)
 
-        print("Best battery economy = ", bestSolution.computePathLength(self.__distanceTable))
-        print("Best path = ", bestSolution.getPath())
+        if bestSolution is None:  # this can happen, especially if EPOCH_COUNT is too small
+            print ("No solution could be found")
+            return
+
+        print("Best battery economy = ", bestSolution.getFitness())
+        print("Path - energy pairs = ", self.__getSolutionFromPath(bestSolution.getPath()))
 
     def getMapSurface(self):
         return self.__map.getMapSurface()

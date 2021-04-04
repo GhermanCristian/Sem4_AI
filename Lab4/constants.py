@@ -38,5 +38,5 @@ class Constants:
     ANT_COUNT = NODE_COUNT * 32
     ALPHA = 1.9
     BETA = 0.9
-    RHO = 0.03
+    RHO = 0.01
     Q0 = 0.5
