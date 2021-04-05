@@ -35,7 +35,7 @@ class Constants:
     EPOCH_COUNT = 100
     NODES_PER_SENSOR = 2 + ENERGY_LEVELS  # each sensor has an entry and exit node + energy level
     NODE_COUNT = SENSOR_COUNT * NODES_PER_SENSOR
-    MOVE_COUNT = 3 * SENSOR_COUNT  # to get from one sensor to another: choose energy level, go to exit, go to next node (3 moves)
+    MOVE_COUNT = 3 * (SENSOR_COUNT - 1)  # to get from one sensor to another: choose energy level, go to exit, go to next node (3 moves)
     ANT_COUNT = NODE_COUNT * 32
     ALPHA = 1.9
     BETA = 0.9
