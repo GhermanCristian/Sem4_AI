@@ -10,7 +10,7 @@ class GUI:
         self.__screen = pygame.display.set_mode((400, 400))
         self.__screen.fill(Constants.WHITE)
         self.__service = service
-        self.__font = pygame.font.SysFont('comicsansms', 14, True)
+        self.__font = pygame.font.SysFont('comicsansms', 15, True)
 
     def getMapSurface(self):
         return self.__service.getMapSurface()
@@ -66,11 +66,10 @@ class GUI:
         textObject = self.__font.render(text, True, Constants.GREEN)
         self.__screen.blit(textObject, (xCoord, yCoord))
 
-    def __displaySensorOrder(self, nodeList):
-        for i in range(len(nodeList)):
-            node = nodeList[i]
-            if isinstance(node, Sensor):
-                self.__displayTextOnPosition(node.getY() * 20 + 5, node.getX() * 20, str(i // Constants.NODES_PER_SENSOR + 1))
+    def __displaySensorOrder(self, pairList):
+        for i in range(len(pairList)):
+            sensor = pairList[i][0]
+            self.__displayTextOnPosition(sensor[1] * 20 + 5, sensor[0] * 20, str(i + 1))
         pygame.display.update()
 
     def start(self):
@@ -91,5 +90,5 @@ class GUI:
         mapWithChargedSensors = bestSolution.computeFitness(self.__service.getMapSurface(), self.__service.getNodeList())
         self.__restoreSensorsOnMap(mapWithChargedSensors, self.__service.getNodeList())
         self.__displayMap(mapWithChargedSensors)
-        self.__displaySensorOrder(self.__service.getNodeList())
+        self.__displaySensorOrder(self.__service.getSolutionFromPath(bestSolution.getPath()))
         self.__waitForKeyboardInput()
