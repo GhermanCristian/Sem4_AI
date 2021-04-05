@@ -38,7 +38,7 @@ class Ant:
         for moveIndex in possibleMoves:
             distanceToNextNode = distanceTable[currentNodeIndex][moveIndex]
             pheromoneToNextNode = pheromoneTable[currentNodeIndex][moveIndex]
-            probability = ((distanceToNextNode + 0.001) ** beta) * (pheromoneToNextNode ** alpha)
+            probability = ((45 - distanceToNextNode) ** beta) * (pheromoneToNextNode ** alpha)
             nextNodeProbability[moveIndex] = probability
 
         return nextNodeProbability
