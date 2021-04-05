@@ -61,17 +61,14 @@ class Service:
             for j in range(Constants.NODE_COUNT):
                 self.__pheromoneTable[i][j] = (1 - rho) * self.__pheromoneTable[i][j]
 
-        if not ants:
-            return None
-
         # add the pheromones produced by the last batch of ants
-        newPheromones = [1.0 / ant.getFitness() for ant in ants]  # TO-DO: check if the order is the same as for range(len(..))
-        for i in range(len(ants)):
-            currentPath = ants[i].getPath()
-            for j in range(len(currentPath) - 1):
-                crtNode = currentPath[j]
-                nextNode = currentPath[j + 1]
-                self.__pheromoneTable[crtNode][nextNode] += newPheromones[i]
+        for ant in ants:
+            newPheromone = 1.0 / ant.getFitness()
+            currentPath = ant.getPath()
+            for i in range(len(currentPath) - 1):
+                crtNode = currentPath[i]
+                nextNode = currentPath[i + 1]
+                self.__pheromoneTable[crtNode][nextNode] += newPheromone
 
         return self.__selectBestAnt(ants)
 

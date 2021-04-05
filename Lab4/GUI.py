@@ -75,6 +75,7 @@ class GUI:
         print("Battery left = ", bestSolution.getBattery())
         print("Sensor - energy pairs = ", self.__service.getSolutionFromPath(bestSolution.getPath()))
 
+        self.__waitForKeyboardInput()
         mapWithChargedSensors = bestSolution.computeFitness(self.__service.getMapSurface(), self.__service.getNodeList())
         self.__restoreSensorsOnMap(mapWithChargedSensors, self.__service.getNodeList())
         self.__displayMap(mapWithChargedSensors)

@@ -29,7 +29,7 @@ class Constants:
     TIME_BETWEEN_MOVES = 50  # in milliseconds
 
     ENERGY_LEVELS = 6  # starting from and including 0
-    DRONE_BATTERY = 100
+    DRONE_BATTERY = 110
     SENSOR_COUNT = 8
     INFINITY = 999999999
     EPOCH_COUNT = 100
