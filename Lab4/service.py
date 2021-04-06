@@ -24,23 +24,6 @@ class Service:
         self.__drone.setX(crtX)
         self.__drone.setY(crtY)
 
-    def __moveAnts(self, ants, alpha, beta, q0):
-        isAntAlive = [True for _ in ants]
-        for i in range(len(ants)):
-            ant = ants[i]
-            for step in range(Constants.MOVE_COUNT - 1):  # subtract 1 because we init the ant by placing it on a node, so 1 node is already taken?
-                successfulMoveCompletion = ant.nextMove(self.__distanceTable, self.__pheromoneTable, q0, alpha, beta)
-                if not successfulMoveCompletion:
-                    isAntAlive[i] = False
-                    break  # no use in trying to move the ant if it has no battery left / is dead
-
-        aliveAnts = []  # only return the ants which completed the path
-        for i in range(len(ants)):
-            if isAntAlive[i]:
-                ants[i].computeFitness(self.__mapSurface, self.__nodeList.getNodeList())  # no use computing the fitness of dead ants
-                aliveAnts.append(ants[i])
-        return aliveAnts
-
     def __selectBestAnt(self, ants):
         bestAnt = None
         bestFitness = 0
@@ -54,16 +37,22 @@ class Service:
         ants = [Ant() for _ in range(antCount)]
 
         # move the ants; remove those which don't reach the end
-        ants = self.__moveAnts(ants, alpha, beta, q0)
+        for ant in ants:
+            for step in range(Constants.MOVE_COUNT - 1):  # subtract 1 because we init the ant by placing it on a node, so 1 node is already taken?
+                ant.nextMove(self.__distanceTable, self.__pheromoneTable, q0, alpha, beta)
+            ant.computeFitness(self.__mapSurface, self.__nodeList.getNodeList())
 
         # simulate pheromone evaporation; it has to be done even if all ants die
         for i in range(Constants.NODE_COUNT):
             for j in range(Constants.NODE_COUNT):
-                self.__pheromoneTable[i][j] = (1 - rho) * self.__pheromoneTable[i][j]
+                self.__pheromoneTable[i][j] *= (1 - rho)
 
         # add the pheromones produced by the last batch of ants
         for ant in ants:
-            newPheromone = 1.0 / ant.getFitness()
+            if ant.getFitness() == Constants.TOTAL_EMPTY_POSITIONS:
+                newPheromone = 0.0001  # it's 29 times smaller than 1 / 340, but not quite 0
+            else:
+                newPheromone = 1.0 / ant.getFitness()
             currentPath = ant.getPath()
             for i in range(len(currentPath) - 1):
                 crtNode = currentPath[i]

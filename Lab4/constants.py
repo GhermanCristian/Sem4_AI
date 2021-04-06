@@ -37,7 +37,7 @@ class Constants:
     NODE_COUNT = SENSOR_COUNT * NODES_PER_SENSOR
     MOVE_COUNT = 3 * SENSOR_COUNT  # to get from one sensor to another: choose energy level, go to exit, go to next node (3 moves)
     ANT_COUNT = NODE_COUNT * 32
-    ALPHA = 1.9
-    BETA = 0.9
-    RHO = 0.01
+    ALPHA = 2
+    BETA = 0.4
+    RHO = 0.03
     Q0 = 0.5

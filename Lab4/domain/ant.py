@@ -1,5 +1,6 @@
 from constants import Constants
 import random
+from nodeList import NodeList
 
 
 class Ant:
@@ -37,8 +38,10 @@ class Ant:
 
         for moveIndex in possibleMoves:
             distanceToNextNode = distanceTable[currentNodeIndex][moveIndex]
+            if NodeList.isEnergyNode(moveIndex):
+                distanceToNextNode = 5 - distanceToNextNode
             pheromoneToNextNode = pheromoneTable[currentNodeIndex][moveIndex]
-            probability = ((distanceToNextNode + 0.001) ** beta) * (pheromoneToNextNode ** alpha)
+            probability = ((45 - distanceToNextNode) ** beta) * (pheromoneToNextNode ** alpha)
             nextNodeProbability[moveIndex] = probability
 
         return nextNodeProbability
