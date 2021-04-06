@@ -35,20 +35,25 @@ class NodeList:
             self.__nodeList.append(Sensor(crtX, crtY))
             self.__placeExtraNodesForASensor(crtX, crtY)
 
-    def __isEntryNode(self, index):
+    @staticmethod
+    def isEntryNode(index):
         return index % Constants.NODES_PER_SENSOR == 0
 
-    def __isExitNode(self, index):
+    @staticmethod
+    def isExitNode(index):
         return (index + 1) % Constants.NODES_PER_SENSOR == 0
 
-    def __isEnergyNode(self, index):
-        return not self.__isEntryNode(index) and not self.__isExitNode(index)
+    @staticmethod
+    def isEnergyNode(index):
+        return not NodeList.isEntryNode(index) and not NodeList.isExitNode(index)
 
-    def __getEntryNode(self, index):
+    @staticmethod
+    def getEntryNode(index):
         return index - index % Constants.NODES_PER_SENSOR
 
-    def __getExitNode(self, index):
-        return self.__getEntryNode(index) + Constants.NODES_PER_SENSOR - 1
+    @staticmethod
+    def getExitNode(index):
+        return NodeList.getEntryNode(index) + Constants.NODES_PER_SENSOR - 1
 
     def __computeDistancesBetweenNodes(self):
         """
@@ -60,7 +65,7 @@ class NodeList:
         for i in range(len(self.__nodeList)):
             self.__distancesBetweenNodes[i][i] = 0  # this applies to all nodes regardless of type
 
-            if self.__isEntryNode(i):  # entry node = sensor
+            if NodeList.isEntryNode(i):  # entry node = sensor
                 sensor = self.__nodeList[i]
                 for energy in range(Constants.ENERGY_LEVELS):
                     # each sensor has a max 'non-wasteful' energy level (everything above that is wasteful)
@@ -70,16 +75,16 @@ class NodeList:
                     else:
                         self.__distancesBetweenNodes[i][i + energy + 1] = Constants.INFINITY
 
-            elif self.__isExitNode(i):
+            elif NodeList.isExitNode(i):
                 # distance between sensors i, j = dist(i.exit, j.entry) = dist(j.exit, i.entry)
                 firstX, firstY = self.__nodeList[i].getX(), self.__nodeList[i].getY()
                 for j in range(i + 1, len(self.__nodeList)):
-                    if self.__isEntryNode(j):
+                    if NodeList.isEntryNode(j):
                         distance = BFS(self.__mapSurface, firstX, firstY, self.__nodeList[j].getX(), self.__nodeList[j].getY()).start()
-                        self.__distancesBetweenNodes[i][j] = self.__distancesBetweenNodes[self.__getExitNode(j)][self.__getEntryNode(i)] = distance
+                        self.__distancesBetweenNodes[i][j] = self.__distancesBetweenNodes[NodeList.getExitNode(j)][NodeList.getEntryNode(i)] = distance
 
             else:  # energy node
-                self.__distancesBetweenNodes[i][self.__getExitNode(i)] = 0
+                self.__distancesBetweenNodes[i][NodeList.getExitNode(i)] = 0
 
     def getNodeList(self):
         return self.__nodeList
