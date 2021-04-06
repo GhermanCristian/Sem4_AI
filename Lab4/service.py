@@ -49,7 +49,10 @@ class Service:
 
         # add the pheromones produced by the last batch of ants
         for ant in ants:
-            newPheromone = 1.0 / ant.getFitness()
+            if ant.getFitness() == Constants.TOTAL_EMPTY_POSITIONS:
+                newPheromone = 0.0001  # it's 29 times smaller than 1 / 340, but not quite 0
+            else:
+                newPheromone = 1.0 / ant.getFitness()
             currentPath = ant.getPath()
             for i in range(len(currentPath) - 1):
                 crtNode = currentPath[i]
