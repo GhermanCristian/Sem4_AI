@@ -14,7 +14,7 @@ from math import sin, cos, pi, trunc
 
 # IMPORT OBJECT LOADER
 from objloader import *
-from solver_solved import solver
+from solver import solver
 
 
 def loadTexture():
@@ -58,13 +58,13 @@ class Corp:
 
 class Mecanism():
     def __init__(self):
-        """ the ansamble is formed from vehicol and pendulum """
+        """ the ensemble is formed from vehicle and pendulum """
 
         self.roata = Corp("roata.obj")
         self.masina = Corp("masina.obj")
         self.pendul = Corp("pendul.obj")
 
-        self.scaleTime = 1 / (10)
+        self.scaleTime = 1 / 10
 
         self.xMax = 500
         self.tMax = 0.35
@@ -72,15 +72,15 @@ class Mecanism():
         # fizica obiectului
         self.M = 1  # mass of the cart in kg
         self.m = 0.1  # mass of the pendulum in kg
-        self.b = 0.8  # coeficient of friction for the cart
-        self.bp = 0.01  # coeficient of friction for the pendulum
+        self.b = 0.8  # coefficient of friction for the cart
+        self.bp = 0.01  # coefficient of friction for the pendulum
         self.l = 1  # length to pendulum center of the mass
         self.I = 0.006  # mass momentum of inertia for the pendulum
         self.F = 0  # force applied to the cart
         self.x = 0  # cart position coordinate
         self.theta = 0.22 * pi  # pendulum angle from vertical (down) in radians
         self.dx = 0  # first derivative of x is zero (no speed)
-        self.d2x = 0  # second derivative of x is zero (no acceletation)
+        self.d2x = 0  # second derivative of x is zero (no acceleration)
         self.dtheta = 0  # no variation for theta
         self.d2theta = 0  # no acceleration for theta
         self.g = 9.8  # the gravitational acceleration
@@ -90,10 +90,9 @@ class Mecanism():
         self.t = self.theta / pi * 180
 
     def toRadian(self, angle):
-        return angle / 180.0 * math.pi
+        return angle / 180.0 * pi
 
     def toDegrees(self, angle):
-
         return int(angle / pi * 180)
 
     def truncate(self, number, digits) -> float:
@@ -174,7 +173,6 @@ class Mecanism():
         return int(self.theta / pi * 180), self.dtheta
 
     def movePendul(self, theta):
-
         # rotirea pendulului cu unghiul theta
 
         glPushMatrix()
@@ -185,7 +183,6 @@ class Mecanism():
         glPopMatrix()
 
     def moveRoata(self, alfa):
-
         # rotirea rotii cu unghiul alfa
         glPushMatrix()
         glTranslate(10.86, 10.86, 0)
@@ -195,10 +192,9 @@ class Mecanism():
         glPopMatrix()
 
     def draw(self):
-        self.drawVehicol(-self.t, -self.x * 5, self.x)
+        self.drawVehicle(-self.t, -self.x * 5, self.x)
 
-    def drawVehicol(self, theta, alfa, x):
-
+    def drawVehicle(self, theta, alfa, x):
         glPushMatrix()
         glTranslate(x, 0, 2)
 
@@ -243,7 +239,7 @@ class Mecanism():
 
 class Table():
     def __init__(self):
-        self.verticies = [[-1.0, 0.0, 0.0],
+        self.vertices = [[-1.0, 0.0, 0.0],
                           [-1.0, 0.0, -1.0],
                           [1.0, 0.0, -1.0],
                           [1.0, 0.0, 0.0]]
@@ -262,7 +258,7 @@ class Table():
 
     def draw(self, size=1.0):
         self.textureID = loadTexture()
-        aux = [[x * size for x in lines] for lines in self.verticies]
+        aux = [[x * size for x in lines] for lines in self.vertices]
         auxColor = [0.5, 0.5, 0.5]
         glBegin(GL_QUADS)
 
@@ -287,7 +283,7 @@ class Table():
 def test():
     pygame.init()
     pygame.display.set_caption("reversed pendulum")
-    viewport = (1800, 600)
+    viewport = (1200, 400)
     hx = viewport[0] / 2
     hy = viewport[1] / 2
     screen = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
@@ -298,12 +294,12 @@ def test():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glShadeModel(GL_SMOOTH)
 
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess)
     glLightfv(GL_LIGHT0, GL_AMBIENT, (0.6, 0.6, 0.6, 1.0))
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0)
 
     spot_direction = [-1.0, -1.0, 0.0]
     glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction)

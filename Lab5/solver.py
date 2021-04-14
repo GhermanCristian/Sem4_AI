@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 In this file your task is to write the solver function!
-
 """
 
 
