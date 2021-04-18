@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-In this file your task is to write the solver function!
-"""
-
 
 class Solver:
+    MINIMUM_ANGLE = -40  # degrees
+    MAXIMUM_ANGLE = 40
+    MINIMUM_ANGULAR_SPEED = -8
+    MAXIMUM_ANGULAR_SPEED = 8
+
     def __init__(self):
         """
         triangles are of the form (a, b, c), the x-coordinates of:
@@ -14,6 +15,18 @@ class Solver:
         self.__fillAngleTriangleSets()
         self.__angularSpeedTriangleSets = []
         self.__fillAngularSpeedTriangleSets()
+
+    def __computeMembershipDegree(self, x, triangleSet):
+        # triangleSet: 0 -> a; 1 -> b; 2 -> c
+        if x <= triangleSet[0] or x >= triangleSet[1]:
+            return 0
+        if x <= triangleSet[2]:
+            if triangleSet[0] == triangleSet[2]:
+                return 1
+            return (x - triangleSet[0]) / (triangleSet[2] - triangleSet[0])
+        if triangleSet[1] == triangleSet[2]:
+            return 1
+        return (triangleSet[1] - x) / (triangleSet[1] - triangleSet[2])
 
     def __fillAngleTriangleSets(self):
         self.__angleTriangleSets.append((-40, -25, -40))  # NVB
@@ -30,6 +43,26 @@ class Solver:
         self.__angularSpeedTriangleSets.append((-1, 1, 0))  # ZO
         self.__angularSpeedTriangleSets.append((0, 6, 3))  # P
         self.__angularSpeedTriangleSets.append((3, 8, 8))  # PB
+
+    def __computeAngleMembershipDegrees(self, angle):
+        if angle < Solver.MINIMUM_ANGLE:
+            angle = Solver.MINIMUM_ANGLE
+        if angle > Solver.MAXIMUM_ANGLE:
+            angle = Solver.MAXIMUM_ANGLE
+        degrees = []
+        for triangleSet in self.__angleTriangleSets:
+            degrees.append(self.__computeMembershipDegree(angle, triangleSet))
+        return degrees
+
+    def __computeAngularSpeedMembershipDegrees(self, angularSpeed):
+        if angularSpeed < Solver.MINIMUM_ANGULAR_SPEED:
+            angularSpeed = Solver.MINIMUM_ANGULAR_SPEED
+        if angularSpeed > Solver.MAXIMUM_ANGULAR_SPEED:
+            angularSpeed = Solver.MAXIMUM_ANGULAR_SPEED
+        degrees = []
+        for triangleSet in self.__angularSpeedTriangleSets:
+            degrees.append(self.__computeMembershipDegree(angularSpeed, triangleSet))
+        return degrees
 
     def solve(self, t, w):
         """
