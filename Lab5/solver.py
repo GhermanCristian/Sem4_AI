@@ -77,13 +77,38 @@ class Solver:
             degrees.append(self.__computeMembershipDegree(angularSpeed, triangleSet))
         return degrees
 
-    def solve(self, t, w):
+    def __computeForceMembershipDegrees(self, angle, angularSpeed):
+        # force -> NVVB = 0; NVB = 1; NB = 2; N = 3; Z = 4; P = 5; PB = 6; PVB = 7; PVVB = 8
+        # angle -> NVB = 0, NB = 1, N = 2, ZO = 3, P = 4, PB = 5, PVB = 6 (on rows)
+        # angularSpeed -> NB = 0, N = 1, ZO = 2, P = 3, PB = 4 (on columns)
+        systemRuleBase = [
+            [0, 0, 1, 2, 3],
+            [0, 1, 2, 3, 4],
+            [1, 2, 3, 4, 5],
+            [2, 3, 4, 5, 6],
+            [3, 4, 5, 6, 7],
+            [4, 5, 6, 7, 8],
+            [5, 6, 7, 8, 8]]
+
+        membershipDegrees = [0 for _ in range(9)]  # will store the max of each class
+        angleMembershipDegrees = self.__computeAngleMembershipDegrees(angle)
+        angularSpeedMembershipDegrees = self.__computeAngularSpeedMembershipDegrees(angularSpeed)
+        for angle in range(7):
+            for angularSpeed in range(5):
+                forceSet = systemRuleBase[angle][angularSpeed]
+                membershipDegreeCurrentSet = min(angleMembershipDegrees[angle], angularSpeedMembershipDegrees[angularSpeed])
+                if membershipDegreeCurrentSet > membershipDegrees[forceSet]:
+                    membershipDegrees[forceSet] = membershipDegreeCurrentSet
+
+        return membershipDegrees
+
+    def solve(self, angle, angularSpeed):
         """
         Parameters
         ----------
-        t : TYPE: float
+        angle : TYPE: float
             DESCRIPTION: the angle theta
-        w : TYPE: float
+        angularSpeed : TYPE: float
             DESCRIPTION: the angular speed omega
 
         Returns
@@ -93,6 +118,14 @@ class Solver:
         or
 
         None :if we have a division by zero
-
         """
-        return None
+
+        forceMembershipDegrees = self.__computeForceMembershipDegrees(angle, angularSpeed)
+        averageSum = 0
+        for setIndex in range(len(forceMembershipDegrees)):
+            averageSum += forceMembershipDegrees[setIndex] * self.__forceTriangleApexes[setIndex]
+        divideBy = sum(forceMembershipDegrees)
+
+        if divideBy == 0:
+            return None
+        return averageSum / divideBy
