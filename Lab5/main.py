@@ -14,7 +14,7 @@ from math import sin, cos, pi, trunc
 
 # IMPORT OBJECT LOADER
 from objloader import *
-from solver import solver
+from solver import Solver
 
 
 def loadTexture():
@@ -379,7 +379,7 @@ def test():
         t, w = revPend.dynamics(appliedForce)
 
         # se calculeaza raspunsul
-        newForce = solver(t, w)
+        newForce = Solver().solve(t, w)
         if newForce != None:
             appliedForce = newForce
         print(t, w, appliedForce)
