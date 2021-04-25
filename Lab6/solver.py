@@ -6,7 +6,7 @@ class Solver:
     CLUSTER_COUNT = 4
 
     def __init__(self):
-        self.__pointList = []  # a point is of the form [xCoord, yCoord, currentLabel, centroidIndex]
+        self.__pointList = []  # a point is of the form [xCoord, yCoord, trueLabel, centroidIndex=predictedLabel]
         self.__centroids = []  # only the coordinates
 
     def __parseLineAndAddToList(self, line):
@@ -27,7 +27,7 @@ class Solver:
         return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
     def __getClosestCentroidIndex(self, currentPoint):
-        minDistance = 20
+        minDistance = 40
         closestCentroid = None
         for centroid in self.__centroids:
             currentDistance = self.__computeEuclidianDistance(currentPoint, centroid)
@@ -54,6 +54,10 @@ class Solver:
         hasChanged = False
         for centroidIndex in range(Solver.CLUSTER_COUNT):
             if count[centroidIndex] == 0:
+                # we don't want to end up with < 4 clusters, so when we get a cluster with 0 points, we just reposition the
+                # centroid by default to (0, 0) and continue from there
+                self.__centroids[centroidIndex][0] = self.__centroids[centroidIndex][1] = 0
+                hasChanged = True
                 continue
             if self.__centroids[centroidIndex][0] != coordSum[centroidIndex][0] / count[centroidIndex]:
                 self.__centroids[centroidIndex][0] = coordSum[centroidIndex][0] / count[centroidIndex]
@@ -76,9 +80,47 @@ class Solver:
             clusterSize[point[3]] += 1
         return True
 
+    def __findOccurrencesInEachCluster(self, trueLabel):
+        occurrences = [0 for _ in range(Solver.CLUSTER_COUNT)]
+        for point in self.__pointList:
+            if point[2] == trueLabel:
+                occurrences[point[3]] += 1
+        return occurrences
+
+    def __rearrangeClusters(self):
+        labelToIndex = {"A": None, "B": None, "C": None, "D": None}
+
+        for trueLabel in labelToIndex.keys():
+            occurrences = self.__findOccurrencesInEachCluster(trueLabel)
+            """
+            if a label appears in a cluster that has already been assigned, try the next-best cluster;
+            this usually happens when we have just 3 clusters (which technically should no longer happen), or when
+            we have 3 large clusters and a very small one (and we have 2 labels who are in majority in the same cluster)
+            """
+            while occurrences.index(max(occurrences)) in labelToIndex.values():
+                occurrences[occurrences.index(max(occurrences))] = -1  # basically mark it as removed
+            labelToIndex[trueLabel] = occurrences.index(max(occurrences))
+
+        return labelToIndex
+
+    def __computeConfusionMatrix(self):
+        confusionMatrix = [[0 for _ in range(Solver.CLUSTER_COUNT)] for _ in range(Solver.CLUSTER_COUNT)]
+        labelToIndex = self.__rearrangeClusters()
+        for point in self.__pointList:
+            trueLabel = labelToIndex[point[2]]
+            predictedLabel = point[3]
+            confusionMatrix[predictedLabel][trueLabel] += 1
+
+        return confusionMatrix
+
+    def __computeMeasurements(self):
+        confusionMatrix = self.__computeConfusionMatrix()
+        print (confusionMatrix)
+
     def solve(self):
         self.__parseDataset()
         self.__generateInitialCentroids()
         for _ in range(20):
             if not self.__doOneIteration():  # no changes in this iteration
                 break
+        self.__computeMeasurements()
