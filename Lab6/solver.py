@@ -137,18 +137,26 @@ class Solver:
             false positive = sum(m[i][j]), j != i -> just the current row (without position [i][i])
             false negative = sum(m[j][i]), j != i -> just the current column (without position [i][i])
         """
+        results = []
+        # rows: 0 = accuracy, 1 = precision, 2 = rappel, 3 = score
         for labelIndex in range(Solver.CLUSTER_COUNT):
             truePositive, trueNegative, falsePositive, falseNegative = self.__computeMeasurementsSpecificLabel(labelIndex, confusionMatrix)
             accuracy = (truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative)
             precision = truePositive / (truePositive + falsePositive)
             rappel = truePositive / (truePositive + falseNegative)
             score = 2 * precision * rappel / (precision + rappel)
+            results.append((accuracy, precision, rappel, score))
             print("===================")
             print("Accuracy: ", accuracy)
             print("Precision: ", precision)
             print("Rappel: ", rappel)
             print("Score: ", score)
 
+        print("===================")
+        print("Average accuracy: ", (sum(row[0] for row in results)) / Solver.CLUSTER_COUNT)
+        print("Average precision: ", (sum(row[1] for row in results)) / Solver.CLUSTER_COUNT)
+        print("Average rappel: ", (sum(row[2] for row in results)) / Solver.CLUSTER_COUNT)
+        print("Average score: ", (sum(row[3] for row in results)) / Solver.CLUSTER_COUNT)
         print(confusionMatrix)
 
     def solve(self):
