@@ -113,9 +113,43 @@ class Solver:
 
         return confusionMatrix
 
+    def __computeMeasurementsSpecificLabel(self, labelIndex, confusionMatrix):
+        truePositive = confusionMatrix[labelIndex][labelIndex]
+
+        trueNegative, falsePositive, falseNegative = 0, 0, 0
+        for i in range(Solver.CLUSTER_COUNT):
+            for j in range(Solver.CLUSTER_COUNT):
+                if i != labelIndex and j != labelIndex:
+                    trueNegative += confusionMatrix[i][j]
+                elif i == labelIndex and j != labelIndex:
+                    falsePositive += confusionMatrix[i][j]
+                elif i != labelIndex and j == labelIndex:
+                    falseNegative += confusionMatrix[i][j]
+
+        return truePositive, trueNegative, falsePositive, falseNegative
+
     def __computeMeasurements(self):
         confusionMatrix = self.__computeConfusionMatrix()
-        print (confusionMatrix)
+        """ 
+        for each label, i = label's index:
+            true positive = m[i][i]
+            true negative = sum(m[j][k]), j, k != i -> the matrix without the current line and column
+            false positive = sum(m[i][j]), j != i -> just the current row (without position [i][i])
+            false negative = sum(m[j][i]), j != i -> just the current column (without position [i][i])
+        """
+        for labelIndex in range(Solver.CLUSTER_COUNT):
+            truePositive, trueNegative, falsePositive, falseNegative = self.__computeMeasurementsSpecificLabel(labelIndex, confusionMatrix)
+            accuracy = (truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative)
+            precision = truePositive / (truePositive + falsePositive)
+            rappel = truePositive / (truePositive + falseNegative)
+            score = 2 * precision * rappel / (precision + rappel)
+            print("===================")
+            print("Accuracy: ", accuracy)
+            print("Precision: ", precision)
+            print("Rappel: ", rappel)
+            print("Score: ", score)
+
+        print(confusionMatrix)
 
     def solve(self):
         self.__parseDataset()
