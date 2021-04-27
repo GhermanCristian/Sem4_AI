@@ -114,6 +114,13 @@ class Solver:
         return confusionMatrix
 
     def __computeMeasurementsSpecificLabel(self, labelIndex, confusionMatrix):
+        """
+        for each label, i = label's index:
+            true positive = m[i][i]
+            true negative = sum(m[j][k]), j, k != i -> the matrix without the current line and column
+            false positive = sum(m[i][j]), j != i -> just the current row (without position [i][i])
+            false negative = sum(m[j][i]), j != i -> just the current column (without position [i][i])
+        """
         truePositive = confusionMatrix[labelIndex][labelIndex]
 
         trueNegative, falsePositive, falseNegative = 0, 0, 0
@@ -130,15 +137,7 @@ class Solver:
 
     def __computeMeasurements(self):
         confusionMatrix = self.__computeConfusionMatrix()
-        """ 
-        for each label, i = label's index:
-            true positive = m[i][i]
-            true negative = sum(m[j][k]), j, k != i -> the matrix without the current line and column
-            false positive = sum(m[i][j]), j != i -> just the current row (without position [i][i])
-            false negative = sum(m[j][i]), j != i -> just the current column (without position [i][i])
-        """
-        results = []
-        # rows: 0 = accuracy, 1 = precision, 2 = rappel, 3 = score
+        results = []  # rows: 0 = accuracy, 1 = precision, 2 = rappel, 3 = score
         for labelIndex in range(Solver.CLUSTER_COUNT):
             truePositive, trueNegative, falsePositive, falseNegative = self.__computeMeasurementsSpecificLabel(labelIndex, confusionMatrix)
             accuracy = (truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative)
@@ -162,7 +161,6 @@ class Solver:
     def solve(self):
         self.__parseDataset()
         self.__generateInitialCentroids()
-        for _ in range(20):
-            if not self.__doOneIteration():  # no changes in this iteration
-                break
+        while self.__doOneIteration():
+            pass
         self.__computeMeasurements()
