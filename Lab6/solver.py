@@ -8,6 +8,7 @@ class Solver:
     def __init__(self):
         self.__pointList = []  # a point is of the form [xCoord, yCoord, trueLabel, centroidIndex=predictedLabel]
         self.__centroids = []  # only the coordinates
+        self.__hasChanged = True  # the last iteration changed anything regarding the points or the centroids
 
     def __parseLineAndAddToList(self, line):
         splitData = line.split(",")
@@ -51,38 +52,29 @@ class Solver:
             coordSum[centroidIndex][1] += point[1]
             count[centroidIndex] += 1
 
-        hasChanged = False
+        self.__hasChanged = False
         for centroidIndex in range(Constants.CLUSTER_COUNT):
             if count[centroidIndex] == 0:
                 # we don't want to end up with < 4 clusters, so when we get a cluster with 0 points, we just reposition the
                 # centroid by default to (0, 0) and continue from there
                 self.__centroids[centroidIndex][0] = self.__centroids[centroidIndex][1] = 0
-                hasChanged = True
+                self.__hasChanged = True
                 continue
             if self.__centroids[centroidIndex][0] != coordSum[centroidIndex][0] / count[centroidIndex]:
                 self.__centroids[centroidIndex][0] = coordSum[centroidIndex][0] / count[centroidIndex]
-                hasChanged = True
+                self.__hasChanged = True
             if self.__centroids[centroidIndex][1] != coordSum[centroidIndex][1] / count[centroidIndex]:
                 self.__centroids[centroidIndex][1] = coordSum[centroidIndex][1] / count[centroidIndex]
-                hasChanged = True
-
-        return hasChanged
+                self.__hasChanged = True
 
     def __doOneIteration(self):
-        # cluster the data around the centroids
-        # recompute the centroids as the means of their clusters
         self.__clusterDataAroundCentroids()
-        hasChanged = self.__recomputeCentroids()
-        if not hasChanged:
-            return False
-        clusterSize = [0 for _ in range(Constants.CLUSTER_COUNT)]
-        for point in self.__pointList:
-            clusterSize[point[3]] += 1
-        return True
+        self.__recomputeCentroids()  # recompute the centroids as the means of their clusters
 
     def solve(self):
         self.__parseDataset()
         self.__generateInitialCentroids()
-        while self.__doOneIteration():
-            pass
+        self.__hasChanged = True
+        while self.__hasChanged:
+            self.__doOneIteration()
         Statistics(self.__pointList).computeMeasurements()
