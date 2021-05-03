@@ -5,4 +5,9 @@ class Constants:
     DATASET_FILE_NAME = 'dataset.dat'
     NEURAL_NETWORK_FILE_NAME = 'network.pt'
     BATCH_SIZE = 20
-    EPOCH_COUNT = 2000
+    EPOCH_COUNT = 5000
+    LEARNING_RATE = 0.02
+
+    INPUT_LAYER_SIZE = 2
+    HIDDEN_LAYER_SIZE = 15
+    OUTPUT_LAYER_SIZE = 1
