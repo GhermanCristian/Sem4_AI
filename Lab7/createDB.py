@@ -20,4 +20,4 @@ class CreateDB:
         return pairedTensor
 
     def saveToFile(self):
-        torch.save(self.__createTensor(), 'dataset.pt')
+        torch.save(self.__createTensor(), Constants.DATASET_FILE_NAME)
