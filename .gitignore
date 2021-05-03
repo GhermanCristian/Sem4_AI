@@ -361,5 +361,7 @@ modules.xml
 *.ipr
 
 .png
+.pt
+.dat
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,python

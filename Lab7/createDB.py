@@ -13,8 +13,11 @@ class CreateDB:
     def __generateInput(self):
         return (Constants.MAX_VALUE - Constants.MIN_VALUE) * torch.rand(Constants.DATA_SIZE, 2) + Constants.MIN_VALUE
 
-    def __create(self):
+    def __createTensor(self):
         inputTensor = self.__generateInput()
         outputTensor = self.__computeFunctionValues(inputTensor)
         pairedTensor = torch.column_stack((inputTensor, outputTensor))
         return pairedTensor
+
+    def saveToFile(self):
+        torch.save(self.__createTensor(), 'dataset.pt')

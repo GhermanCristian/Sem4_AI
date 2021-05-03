@@ -2,7 +2,8 @@ from createDB import CreateDB
 
 
 def main():
-    CreateDB().create()
+    # CreateDB().saveToFile()
+    pass
 
 
 if __name__ == "__main__":
