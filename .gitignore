@@ -361,6 +361,8 @@ modules.xml
 *.ipr
 
 .png
+.jpg
+.jpeg
 .pt
 .dat
 
