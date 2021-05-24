@@ -6,7 +6,7 @@ class Unit(nn.Module):
         super(Unit, self).__init__()
 
         self.conv = nn.Conv2d(in_channels=inChannels, kernel_size=3, out_channels=outChannels, stride=1, padding=1)
-        self.bn = nn.BatchNorm2d(numFeatures=outChannels)
+        self.bn = nn.BatchNorm2d(num_features=outChannels)
         self.relu = nn.ReLU()
 
     def forward(self, inputData):

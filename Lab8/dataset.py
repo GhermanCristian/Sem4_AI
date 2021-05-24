@@ -1,25 +1,9 @@
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import time
-import os, random
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, models, transforms
-from PIL import Image
+import os
+from torch.utils.data import Dataset
+from torchvision import transforms
 from torchvision.datasets.folder import pil_loader
-
-
-def loadImageList(folderName):
-    images = []
-    classes = []
-    for imageName in os.listdir(folderName):
-        image = pil_loader(os.path.join(folderName, imageName))
-        isHuman = 1
-        if "non" in imageName:  # nonhuman
-            isHuman = 0
-        images.append(image.resize((224, 224)))
-        classes.append(isHuman)
-    return images, classes
+from PIL import Image
+from matplotlib import image as img
 
 
 class ImageClassifierDataset(Dataset):
@@ -31,8 +15,6 @@ class ImageClassifierDataset(Dataset):
 
         self.__imageSize = 224  # square image
         self.__transformations = transforms.Compose([
-            transforms.Resize(self.__imageSize),
-            transforms.CenterCrop(self.__imageSize),
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])
@@ -47,8 +29,15 @@ class ImageClassifierDataset(Dataset):
     def __len__(self):
         return len(self.__images)
 
-
-trainSetImages, trainSetClasses = loadImageList("images/train")
-trainSet = ImageClassifierDataset(trainSetImages, trainSetClasses)
-testSetImages, testSetClasses = loadImageList("images/test")
-testSet = ImageClassifierDataset(testSetImages, testSetClasses)
+    @staticmethod
+    def loadImageList(folderName):
+        images = []
+        classes = []
+        for imageName in os.listdir(folderName):
+            image = pil_loader(os.path.join(folderName, imageName))
+            isHuman = 1
+            if "non" in imageName:  # nonhuman
+                isHuman = 0
+            images.append(image.resize((224, 224)))
+            classes.append(isHuman)
+        return images, classes

@@ -360,10 +360,11 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
-.png
-.jpg
-.jpeg
-.pt
-.dat
+*.png
+*.jpg
+*.jpeg
+*.pt
+*.dat
+*.model
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,python
