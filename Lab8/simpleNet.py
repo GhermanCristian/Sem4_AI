@@ -12,27 +12,27 @@ class SimpleNet(nn.Module):
         self.unit2 = Unit(32, 32)
         self.unit3 = Unit(32, 32)
 
-        self.pool1 = nn.MaxPool2d(kernel_size=2)  # 224 (initial image size) / 2 => 112
+        self.pool1 = nn.MaxPool2d(kernel_size=2)
 
         self.unit4 = Unit(32, 64)
         self.unit5 = Unit(64, 64)
         self.unit6 = Unit(64, 64)
         self.unit7 = Unit(64, 64)
 
-        self.pool2 = nn.MaxPool2d(kernel_size=2)  # 112 / 2 => 56
+        self.pool2 = nn.MaxPool2d(kernel_size=2)
 
         self.unit8 = Unit(64, 128)
         self.unit9 = Unit(128, 128)
         self.unit10 = Unit(128, 128)
         self.unit11 = Unit(128, 128)
 
-        self.pool3 = nn.MaxPool2d(kernel_size=2)  # 56 / 2 => 28
+        self.pool3 = nn.MaxPool2d(kernel_size=2)
 
         self.unit12 = Unit(128, 128)
         self.unit13 = Unit(128, 128)
         self.unit14 = Unit(128, 128)
 
-        self.avgpool = nn.AvgPool2d(kernel_size=4)  # 28 / 4 => 7
+        self.avgpool = nn.AvgPool2d(kernel_size=4)
 
         # Add all the units into the Sequential layer in exact order
         self.net = nn.Sequential(self.unit1, self.unit2, self.unit3, self.pool1, self.unit4, self.unit5, self.unit6

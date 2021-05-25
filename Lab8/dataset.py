@@ -1,23 +1,18 @@
 import os
 from torch.utils.data import Dataset
-from torchvision import transforms
 from torchvision.datasets.folder import pil_loader
-from PIL import Image
-from matplotlib import image as img
+from constants import Constants
 
 
 class ImageClassifierDataset(Dataset):
-    def __init__(self, imageList, imageClasses):
+    def __init__(self, imageList, imageClasses, transform):
         self.__images = []
         self.__labels = []
         self.__classes = list(set(imageClasses))
         self.__classToLabel = {className: imageName for imageName, className in enumerate(self.__classes)}
 
-        self.__imageSize = 224  # square image
-        self.__transformations = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ])
+        self.__imageSize = Constants.IMAGE_SIZE  # square image
+        self.__transformations = transform
 
         for image, imageClass in zip(imageList, imageClasses):
             self.__images.append(self.__transformations(image))
@@ -34,10 +29,10 @@ class ImageClassifierDataset(Dataset):
         images = []
         classes = []
         for imageName in os.listdir(folderName):
-            image = pil_loader(os.path.join(folderName, imageName))
+            image = pil_loader(os.path.join(folderName, imageName)).convert('RGB')
             isHuman = 1
             if "non" in imageName:  # nonhuman
                 isHuman = 0
-            images.append(image.resize((224, 224)))
+            images.append(image)
             classes.append(isHuman)
         return images, classes

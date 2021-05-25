@@ -3,21 +3,35 @@ from torch.autograd import Variable
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 import torch.nn as nn
+from torchvision.transforms import transforms
+from constants import Constants
 from dataset import ImageClassifierDataset
 from simpleNet import SimpleNet
 
 
 def getTrainLoader():
     trainSetImages, trainSetClasses = ImageClassifierDataset.loadImageList("images/train")
-    # transformations ?
-    trainSet = ImageClassifierDataset(trainSetImages, trainSetClasses)
-    return DataLoader(trainSet, batch_size=8, shuffle=False, num_workers=4)
+    trainTransformations = transforms.Compose([
+        transforms.Resize((Constants.IMAGE_SIZE, Constants.IMAGE_SIZE)),
+        transforms.RandomHorizontalFlip(),
+        # transforms.RandomCrop(32, padding=4),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+    trainSet = ImageClassifierDataset(trainSetImages, trainSetClasses, trainTransformations)
+    return DataLoader(trainSet, batch_size=Constants.BATCH_SIZE, shuffle=True, num_workers=4)
 
 
 def getTestLoader():
     testSetImages, testSetClasses = ImageClassifierDataset.loadImageList("images/test")
-    testSet = ImageClassifierDataset(testSetImages, testSetClasses)
-    return DataLoader(testSet, batch_size=8, shuffle=False, num_workers=4)
+    testTransformations = transforms.Compose([
+        transforms.Resize((Constants.IMAGE_SIZE, Constants.IMAGE_SIZE)),
+        transforms.CenterCrop(Constants.IMAGE_SIZE),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+    testSet = ImageClassifierDataset(testSetImages, testSetClasses, testTransformations)
+    return DataLoader(testSet, batch_size=Constants.BATCH_SIZE, shuffle=False, num_workers=4)
 
 
 def adjustLearningRate(epoch, optimizer):
@@ -120,8 +134,8 @@ def runProgram():
     testLoader = getTestLoader()
     model = SimpleNet(2)
     lossFunction = nn.CrossEntropyLoss()
-    isCudaAvailable = torch.cuda.is_available()
-    #isCudaAvailable = False
+    # isCudaAvailable = torch.cuda.is_available()
+    isCudaAvailable = False
     if isCudaAvailable:
         model.cuda()
     optimizer = Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
