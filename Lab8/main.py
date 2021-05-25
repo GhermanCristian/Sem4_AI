@@ -1,4 +1,4 @@
-from train import runProgram
+from train import Train
 
 if __name__ == "__main__":
-    runProgram()
+    Train().runProgram()
